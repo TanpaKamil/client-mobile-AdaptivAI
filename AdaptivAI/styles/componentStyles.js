@@ -4,10 +4,8 @@ export const ButtonStyles = StyleSheet.create({
   buttonShape: {
     display: "flex",
     height: "100%",
-    paddingLeft: 20,
     borderWidth: 1,
     borderRadius: 40,
-    paddingLeft: 12,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -20,6 +18,7 @@ export const ButtonStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#FFFFFF",
+    textAlign: "center",
   },
 });
 

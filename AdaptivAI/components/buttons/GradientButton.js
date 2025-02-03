@@ -1,7 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { Text, TouchableOpacity } from "react-native";
-import { useTheme } from "../contexts/ThemeContext";
-import { ButtonStyles } from "../styles/componentStyles";
+import { useTheme } from "../../contexts/ThemeContext";
+import { ButtonStyles } from "../../styles/componentStyles";
 
 export default function GradientButton({ text, onPress }) {
   const { theme } = useTheme();

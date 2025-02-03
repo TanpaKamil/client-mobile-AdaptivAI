@@ -7,9 +7,9 @@ import {
   TextInput,
   View,
 } from "react-native";
-import GradientButton from "../components/GradientButton";
+import GradientButton from "../components/buttons/GradientButton";
 import { FormInputStyles } from "../styles/componentStyles";
-import Button from "../components/Button";
+import Button from "../components/buttons/Button";
 import Divider from "../components/Divider";
 import { useNavigation } from "@react-navigation/native";
 
@@ -78,7 +78,7 @@ export default function LoginScreen() {
 
         {/* Sign Up Button*/}
         <View style={{ width: 280, height: 50, display: "flex" }}>
-          <Button text={"Sign Up"} onPress={() => navigation.navigate("Register")} />
+          <Button text={"Sign Up"} color={"gray"} onPress={() => navigation.navigate("Register")} />
         </View>
       </View>
     </View>
