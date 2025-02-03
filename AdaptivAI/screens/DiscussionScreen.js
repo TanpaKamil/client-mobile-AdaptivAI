@@ -1,11 +1,113 @@
-import { StyleSheet, Text, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useTheme } from "../contexts/ThemeContext";
+import DiscussionCard from "../components/cards/DiscussionCard";
+import GradientButton from "../components/buttons/GradientButton";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import SearchBar from "../components/SearchInput";
 
 export default function DiscussionScreen() {
   const { theme } = useTheme();
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <Text>Discussion Screen</Text>
+      <View style={{ width: "100%", height: "100%" }}>
+        <View style={{ flex: 1, marginTop: 60, marginHorizontal: 25 }}>
+          <SearchBar />
+
+          {/* Discussion Section */}
+          <View
+            style={{
+              marginTop: 40,
+              display: "flex",
+              flexDirection: "column",
+              marginBottom: 30,
+            }}
+          >
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text
+                style={{
+                  color: theme.text,
+                  fontFamily: theme.fonts.regular,
+                  fontSize: 16,
+                  fontWeight: "bold",
+                }}
+              >
+                Discussions
+              </Text>
+
+              {/* View all button */}
+              <TouchableOpacity
+                style={{
+                  paddingVertical: 2,
+                  paddingHorizontal: 10,
+                  borderColor: "#FBA459",
+                  borderWidth: 1,
+                  borderRadius: 8,
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Ionicons
+                  name="swap-vertical-outline"
+                  size={12}
+                  color="#FFFFFF"
+                />
+                <Text
+                  style={{
+                    color: theme.text,
+                    fontFamily: theme.fonts.regular,
+                    fontSize: 10,
+                    marginLeft: 5,
+                  }}
+                >
+                  View All
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View
+              style={{
+                marginTop: 20,
+                display: "flex",
+                flexDirection: "column",
+                padding: 12,
+                backgroundColor: "#303030",
+                borderRadius: 12,
+                borderWidth: 1,
+                borderColor: "#606060",
+                gap: 12,
+              }}
+            >
+              {/* Disccusion Card */}
+              <DiscussionCard />
+              <DiscussionCard />
+              <DiscussionCard />
+              <DiscussionCard />
+            </View>
+          </View>
+
+          <View
+            style={{
+              height: 50,
+            }}
+          >
+            <GradientButton text={"START DISCUSSION"} />
+          </View>
+        </View>
+      </View>
     </View>
   );
 }

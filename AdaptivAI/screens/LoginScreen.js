@@ -70,7 +70,7 @@ export default function LoginScreen() {
 
         {/* Sign In Button*/}
         <View style={{ width: 280, height: 50, display: "flex" }}>
-          <GradientButton text={"Sign In"} onPress={() => {}} />
+          <GradientButton text={"Sign In"} onPress={() => {navigation.navigate("Home")}} />
         </View>
 
         {/* Divider */}

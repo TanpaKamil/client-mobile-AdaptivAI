@@ -28,7 +28,7 @@ export default function TabNavigator() {
             iconName = focused ? "add-circle" : "add-circle-outline";
           }
 
-          return <Ionicons name={iconName} size={18} color={color} />;
+          return <Ionicons name={iconName} size={20} color={color} />;
         },
         tabBarActiveTintColor: "#FBA459",
         tabBarInactiveTintColor: "#FFFFFF",

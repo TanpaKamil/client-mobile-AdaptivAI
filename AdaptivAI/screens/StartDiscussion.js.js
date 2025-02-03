@@ -4,7 +4,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Picker } from "@react-native-picker/picker";
 import GradientButton from "../components/buttons/GradientButton";
 
-export default function GenerateModuleScreen() {
+export default function StartDiscussion() {
   const { theme } = useTheme();
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -18,7 +18,7 @@ export default function GenerateModuleScreen() {
               fontSize: 18,
             }}
           >
-            Input File
+            Upload Image
           </Text>
           <View
             style={{
@@ -27,6 +27,7 @@ export default function GenerateModuleScreen() {
               marginTop: 10,
               display: "flex",
               flexDirection: "column",
+              justifyContent: "center",
               padding: 12,
               backgroundColor: "#303030",
               borderRadius: 12,
@@ -36,17 +37,6 @@ export default function GenerateModuleScreen() {
               alignItems: "center",
             }}
           >
-            <Text
-              style={{
-                fontFamily: theme.fonts.regular,
-                fontSize: 14,
-                color: "rgba(255,255,255,0.25)",
-                textAlign: "left",
-                width: "100%",
-              }}
-            >
-              PDF File Max 20MB
-            </Text>
             <Ionicons
               name="add-circle-sharp"
               size={45}
@@ -65,28 +55,24 @@ export default function GenerateModuleScreen() {
               marginBottom: 6,
             }}
           >
-            Language
+            Title
           </Text>
 
-          <View
+          <TextInput
             style={{
               width: "100%",
-              marginTop: 10,
-              backgroundColor: "#FFFFFF",
+              padding: 12,
+              height: 50,
+              backgroundColor: "#303030",
               borderRadius: 12,
               borderWidth: 2,
-              borderColor: "rgba(100,100,100,0.8)",
+              borderColor: "#FFFFFF",
+              color: "#FFFFFF",
+              textAlign: "left",
+              textAlignVertical: "top",
             }}
-          >
-            <Picker>
-              <Picker.Item
-                label="Bahasa Indonesia"
-                value="id"
-                themeVariant={"light"}
-              />
-              <Picker.Item label="English" value="en" />
-            </Picker>
-          </View>
+            defaultValue="Input Title"
+          />
 
           <Text
             style={{
@@ -97,7 +83,7 @@ export default function GenerateModuleScreen() {
               marginVertical: 10,
             }}
           >
-            Additional Notes
+            Content
           </Text>
 
           <TextInput
@@ -113,14 +99,14 @@ export default function GenerateModuleScreen() {
               textAlign: "left",
               textAlignVertical: "top",
             }}
-            defaultValue="Input additional notes"
+            defaultValue="Write your questions"
             multiline={true}
           />
 
           <View style={{
             width: "100%", height: 50, marginTop: 20
           }}>
-            <GradientButton text={"GENERATE"} />
+            <GradientButton text={"START DISCUSSION"} />
           </View>
         </View>
       </View>

@@ -29,7 +29,6 @@ export default function DiscussionFeatured() {
           display: "flex",
           flexDirection: "column",
           padding: 12,
-          marginTop: 20,
           backgroundColor: "#303030",
           borderRadius: 12,
           borderWidth: 1,
