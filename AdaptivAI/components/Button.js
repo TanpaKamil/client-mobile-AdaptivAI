@@ -7,7 +7,9 @@ export default function Button({ text, onPress }) {
   const { theme } = useTheme();
 
   return (
-    <TouchableOpacity style={[ButtonStyles.buttonShape, { backgroundColor: "gray" }]}>
+    <TouchableOpacity style={[ButtonStyles.buttonShape, { backgroundColor: "gray" }]}
+    onPress={onPress}
+    >
         <Text
           style={[
             ButtonStyles.buttonText,

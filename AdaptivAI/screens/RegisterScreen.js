@@ -1,19 +1,12 @@
-
 import { useTheme } from "../contexts/ThemeContext";
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Image, StyleSheet, Text, TextInput, View } from "react-native";
 import GradientButton from "../components/GradientButton";
 import { FormInputStyles } from "../styles/componentStyles";
 import Button from "../components/Button";
 import Divider from "../components/Divider";
 import { useNavigation } from "@react-navigation/native";
 
-export default function LoginScreen() {
+export default function RegisterScreen() {
   const { theme } = useTheme();
   const navigation = useNavigation();
 
@@ -31,7 +24,7 @@ export default function LoginScreen() {
           marginTop: 20,
         }}
       >
-        Welcome Back
+        Hi There!
       </Text>
       <Text
         style={{
@@ -41,7 +34,7 @@ export default function LoginScreen() {
           fontWeight: "bold",
         }}
       >
-        Please, Log In.
+        Let's Get Started
       </Text>
 
       {/* Login Form */}
@@ -68,9 +61,18 @@ export default function LoginScreen() {
           />
         </View>
 
+        {/* Password Confirmation Input */}
+        <View style={FormInputStyles.inputContainer}>
+          <TextInput
+            style={FormInputStyles.inputText}
+            placeholder="Password Confirmation"
+            secureTextEntry={true}
+          />
+        </View>
+
         {/* Sign In Button*/}
         <View style={{ width: 280, height: 50, display: "flex" }}>
-          <GradientButton text={"Sign In"} onPress={() => {}} />
+          <GradientButton text={"Create an Account"} onPress={() => {}} />
         </View>
 
         {/* Divider */}
@@ -78,7 +80,7 @@ export default function LoginScreen() {
 
         {/* Sign Up Button*/}
         <View style={{ width: 280, height: 50, display: "flex" }}>
-          <Button text={"Sign Up"} onPress={() => navigation.navigate("Register")} />
+          <Button text={"Sign In"} onPress={() => navigation.navigate("Login")} />
         </View>
       </View>
     </View>
