@@ -1,8 +1,6 @@
 import {
-  ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -67,7 +65,7 @@ export default function DiscussionScreen() {
                     marginLeft: 5,
                   }}
                 >
-                  View All
+                  Recent
                 </Text>
               </TouchableOpacity>
             </View>

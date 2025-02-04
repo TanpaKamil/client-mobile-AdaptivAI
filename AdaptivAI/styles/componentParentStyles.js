@@ -61,8 +61,8 @@ export const discussionFeaturedStyles = StyleSheet.create({
   mainContainer: {
     marginTop: 20,
     display: "flex",
-    flexDirection: "column",
-    marginBottom: 30,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   cardContainer: {
     marginTop: 20,
@@ -74,6 +74,7 @@ export const discussionFeaturedStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#606060",
     gap: 12,
+    marginBottom: 30,
   },
   titleText: {
     fontSize: 16,

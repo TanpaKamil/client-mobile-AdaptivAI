@@ -10,6 +10,8 @@ import MyModuleDetail from "../screens/MyModuleDetail";
 import AssessmentScreen from "../screens/AssessmentScreen";
 import StartDiscussionScreen from "../screens/StartDiscussion.js";
 import DiscussionDetail from "../screens/DiscussionDetail.js";
+import DiscussionScreen from "../screens/DiscussionScreen.js";
+import EditProfileScreen from "../screens/EditProfileScreen.js";
 
 const Stack = createNativeStackNavigator();
 export default function RootStack() {
@@ -107,6 +109,14 @@ export default function RootStack() {
       <Stack.Screen
         name="DiscussionDetail"
         component={DiscussionDetail}
+        options={{
+          headerShown: true,
+        }}
+      />
+
+      <Stack.Screen
+        name="EditProfile"
+        component={EditProfileScreen}
         options={{
           headerShown: true,
         }}

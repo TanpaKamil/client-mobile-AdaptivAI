@@ -23,7 +23,7 @@ export default function TabNavigator() {
           } else if (route.name === "Discussion") {
             iconName = focused ? "chatbubbles" : "chatbubbles-outline";
           } else if (route.name === "Profile") {
-            iconName = focused ? "person" : "person-outline";
+            iconName = focused ? "person-circle" : "person-circle-outline";
           } else if (route.name === "Generate") {
             iconName = focused ? "add-circle" : "add-circle-outline";
           }
