@@ -1,41 +1,26 @@
 import { Text, View } from "react-native";
 import { useTheme } from "../contexts/ThemeContext";
 import DiscussionCard from "./cards/DiscussionCard";
+import { discussionFeaturedStyles } from "../styles/componentParentStyles";
+import { useNavigation } from "@react-navigation/native";
 
 export default function DiscussionFeatured() {
   const { theme } = useTheme();
+  const navigation = useNavigation();
   return (
-    <View
-      style={{
-        marginTop: 20,
-        display: "flex",
-        flexDirection: "column",
-        marginBottom: 30,
-      }}
-    >
+    <View style={discussionFeaturedStyles.mainContainer}>
       <Text
-        style={{
-          color: theme.text,
-          fontFamily: theme.fonts.regular,
-          fontSize: 16,
-          fontWeight: "bold",
-        }}
+        style={[
+          {
+            color: theme.text,
+            fontFamily: theme.fonts.regular,
+          },
+          discussionFeaturedStyles.titleText,
+        ]}
       >
         Discussions
       </Text>
-      <View
-        style={{
-          marginTop: 20,
-          display: "flex",
-          flexDirection: "column",
-          padding: 12,
-          backgroundColor: "#303030",
-          borderRadius: 12,
-          borderWidth: 1,
-          borderColor: "#606060",
-          gap: 12,
-        }}
-      >
+      <View style={discussionFeaturedStyles.cardContainer}>
         {/* Disccusion Card */}
         <DiscussionCard />
         <DiscussionCard />

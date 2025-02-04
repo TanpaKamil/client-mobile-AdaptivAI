@@ -11,9 +11,12 @@ import DiscussionCard from "../components/cards/DiscussionCard";
 import GradientButton from "../components/buttons/GradientButton";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import SearchBar from "../components/SearchInput";
+import { useNavigation } from "@react-navigation/native";
+import { tranparentBtnStyles } from "../styles/componentStyles";
 
 export default function DiscussionScreen() {
   const { theme } = useTheme();
+  const navigation = useNavigation();
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={{ width: "100%", height: "100%" }}>
@@ -49,16 +52,7 @@ export default function DiscussionScreen() {
 
               {/* View all button */}
               <TouchableOpacity
-                style={{
-                  paddingVertical: 2,
-                  paddingHorizontal: 10,
-                  borderColor: "#FBA459",
-                  borderWidth: 1,
-                  borderRadius: 8,
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
+                style={tranparentBtnStyles.mainContainer}
               >
                 <Ionicons
                   name="swap-vertical-outline"
@@ -104,7 +98,7 @@ export default function DiscussionScreen() {
               height: 50,
             }}
           >
-            <GradientButton text={"START DISCUSSION"} />
+            <GradientButton text={"START DISCUSSION"} onPress={() => navigation.navigate("StartDiscussion")}/>
           </View>
         </View>
       </View>

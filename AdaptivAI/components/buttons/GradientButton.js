@@ -7,7 +7,7 @@ export default function GradientButton({ text, onPress }) {
   const { theme } = useTheme();
 
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={onPress}>
       <LinearGradient
         colors={["#FBA459", "#D95E6F"]}
         start={{ x: 0, y: 0 }}

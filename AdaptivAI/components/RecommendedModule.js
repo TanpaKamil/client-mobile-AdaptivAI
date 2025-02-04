@@ -1,17 +1,14 @@
 import { Text, View } from "react-native";
 import ModuleCard from "./cards/ModuleCard";
 import { useTheme } from "../contexts/ThemeContext";
+import { useNavigation } from "@react-navigation/native";
+import { recommededModuleStyles } from "../styles/componentParentStyles";
 
 export default function RecommendedModule() {
   const { theme } = useTheme();
+  const navigation = useNavigation();
   return (
-    <View
-      style={{
-        marginTop: 20,
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <View style={recommededModuleStyles.mainContainer}>
       <Text
         style={{
           color: theme.text,
@@ -23,17 +20,10 @@ export default function RecommendedModule() {
         Top Recommendation Module
       </Text>
       {/* Module List */}
-      <View
-        style={{
-          marginTop: 10,
-          display: "flex",
-          flexDirection: "column",
-          gap: 10,
-        }}
-      >
-        <ModuleCard />
-        <ModuleCard />
-        <ModuleCard />
+      <View style={recommededModuleStyles.cardContainer}>
+        <ModuleCard onPress={() => navigation.navigate("PublicModuleDetail")} />
+        <ModuleCard onPress={() => navigation.navigate("PublicModuleDetail")} />
+        <ModuleCard onPress={() => navigation.navigate("PublicModuleDetail")} />
       </View>
     </View>
   );

@@ -1,39 +1,43 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../../contexts/ThemeContext";
+import { CardDiscussionStyles } from "../../styles/componentStyles";
+import { useNavigation } from "@react-navigation/native";
 
 export default function DiscussionCard({ discussion }) {
   const { theme } = useTheme();
+  const navigation = useNavigation();
   return (
-    <TouchableOpacity style={{ display: "flex", flexDirection: "row" }}>
+    <TouchableOpacity
+      style={CardDiscussionStyles.mainContainer}
+      onPress={() => {
+        navigation.navigate("DiscussionDetail");
+      }}
+    >
       <Image
         source={{
           uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHC_8-EMZFLsoGfcdsw3cR7IS3DmOf7tgoJg&s",
         }}
-        style={{ width: 40, height: 40, borderRadius: 5 }}
+        style={CardDiscussionStyles.imgSize}
       />
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          marginLeft: 10,
-        }}
-      >
+      <View style={CardDiscussionStyles.columnContainer}>
         <Text
-          style={{
-            color: theme.text,
-            fontFamily: theme.fonts.regular,
-            fontSize: 16,
-            fontWeight: "bold",
-          }}
+          style={[
+            {
+              color: theme.text,
+              fontFamily: theme.fonts.regular,
+            },
+            CardDiscussionStyles.TitleText,
+          ]}
         >
           Discussions
         </Text>
         <Text
-          style={{
-            color: "rgba(255, 255, 255, 0.25)",
-            fontFamily: theme.fonts.regular,
-            fontSize: 12,
-          }}
+          style={[
+            {
+              fontFamily: theme.fonts.regular,
+            },
+            CardDiscussionStyles.seenText,
+          ]}
         >
           Last reply 2h ago • 5 replies
         </Text>

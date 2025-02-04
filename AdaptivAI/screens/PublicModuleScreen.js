@@ -4,12 +4,14 @@ import { useTheme } from "../contexts/ThemeContext";
 import SearchBar from "../components/SearchInput";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ModuleCard from "../components/cards/ModuleCard";
+import { useNavigation } from "@react-navigation/native";
 
 export default function PublicModuleScreen() {
   const { theme } = useTheme();
+  const navigation = useNavigation();
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <View style={{ flex: 1, marginTop: 60, width: "100%" }}>
+      <View style={{ flex: 1, marginTop: 20, width: "100%" }}>
         <View
           style={{
             display: "flex",
@@ -130,7 +132,7 @@ export default function PublicModuleScreen() {
             display: "flex",
             gap: 10
           }}>
-            <ModuleCard />
+            <ModuleCard onPress={() => navigation.navigate("PublicModuleDetail")}/>
             <ModuleCard />
             <ModuleCard />
             <ModuleCard />

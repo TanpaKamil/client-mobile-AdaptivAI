@@ -38,15 +38,7 @@ export default function RegisterScreen() {
       </Text>
 
       {/* Login Form */}
-      <View
-        style={{
-          justifyContent: "center",
-          marginTop: 40,
-          marginBottom: 60,
-          gap: 20,
-          width: 280,
-        }}
-      >
+      <View style={FormInputStyles.formContainer}>
         {/* Username Input */}
         <View style={FormInputStyles.inputContainer}>
           <TextInput style={FormInputStyles.inputText} placeholder="Username" />
@@ -71,7 +63,7 @@ export default function RegisterScreen() {
         </View>
 
         {/* Sign In Button*/}
-        <View style={{ width: 280, height: 50, display: "flex" }}>
+        <View style={FormInputStyles.btn}>
           <GradientButton text={"Create an Account"} onPress={() => {}} />
         </View>
 
@@ -79,8 +71,12 @@ export default function RegisterScreen() {
         <Divider />
 
         {/* Sign Up Button*/}
-        <View style={{ width: 280, height: 50, display: "flex" }}>
-          <Button text={"Sign In"} color={"gray"} onPress={() => navigation.navigate("Login")} />
+        <View style={FormInputStyles.btn}>
+          <Button
+            text={"Sign In"}
+            color={"gray"}
+            onPress={() => navigation.navigate("Login")}
+          />
         </View>
       </View>
     </View>

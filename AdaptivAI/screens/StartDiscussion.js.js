@@ -1,10 +1,9 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { useTheme } from "../contexts/ThemeContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Picker } from "@react-native-picker/picker";
 import GradientButton from "../components/buttons/GradientButton";
 
-export default function StartDiscussion() {
+export default function StartDiscussionScreen() {
   const { theme } = useTheme();
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -111,7 +110,7 @@ export default function StartDiscussion() {
         </View>
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({

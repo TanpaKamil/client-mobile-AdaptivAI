@@ -1,9 +1,6 @@
 import {
-  Image,
   ScrollView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { useTheme } from "../contexts/ThemeContext";
@@ -24,13 +21,7 @@ export default function HomeScreen() {
           <DashboardProfile />
 
           {/* Button Generate Module */}
-          <View
-            style={{
-              display: "flex",
-              marginTop: 30,
-              height: 40,
-            }}
-          >
+          <View style={styles.btn}>
             <ButtonGenerate text={"Create New Module"} />
           </View>
 
@@ -57,5 +48,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     justifyContent: "center",
     color: "#FFFFFF",
+  },
+  btn: {
+    display: "flex",
+    marginTop: 30,
+    height: 40,
   },
 });

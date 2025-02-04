@@ -1,4 +1,3 @@
-import { LinearGradient } from "expo-linear-gradient";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../../contexts/ThemeContext";
 import { ButtonStyles } from "../../styles/componentStyles";

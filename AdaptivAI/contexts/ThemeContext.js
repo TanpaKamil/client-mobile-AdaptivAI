@@ -10,7 +10,7 @@ export const ThemeProvider = ({ children }) => {
       regular: "InterRegular",
       bold: "InterBold",
     },
-    gradientColors: ["#FBA459", "#D95E6F"]
+    gradientColors: ["#FBA459", "#D95E6F"],
   });
 
   return (

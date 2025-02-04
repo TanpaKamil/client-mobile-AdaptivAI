@@ -1,34 +1,30 @@
 import { Image, Text, TouchableOpacity } from "react-native";
 import { useTheme } from "../../contexts/ThemeContext";
+import { cardFeaturedModuleStyles } from "../../styles/componentStyles";
 
-export default function FeatureCard({ module }) {
+export default function FeatureCard({ module, onPress }) {
   const { theme } = useTheme();
   return (
     <TouchableOpacity
-      style={{
-        backgroundColor: "#303030",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#606060",
-        width: 160,
-        padding: 10,
-      }}
+      onPress={onPress}
+      style={cardFeaturedModuleStyles.mainContainer}
     >
       <Image
         source={{
-          uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHC_8-EMZFLsoGfcdsw3cR7IS3DmOf7tgoJg&s",
+          uri: `https://image.pollinations.ai/prompt/illustrationof${module.title}?width=200&height=320&nologo=true`,
         }}
-        style={{ height: 80, borderRadius: 10 }}
+        style={cardFeaturedModuleStyles.imgSize}
       />
       <Text
-        style={{
-          color: theme.text,
-          fontFamily: theme.fonts.regular,
-          fontSize: 12,
-          marginTop: 5,
-        }}
+        style={[
+          {
+            color: theme.text,
+            fontFamily: theme.fonts.regular,
+          },
+          cardFeaturedModuleStyles.text,
+        ]}
       >
-        Machine Learning
+        {module.title} {module._id}
       </Text>
     </TouchableOpacity>
   );

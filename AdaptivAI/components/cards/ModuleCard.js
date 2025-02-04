@@ -2,80 +2,53 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import IonIcons from "@expo/vector-icons/Ionicons";
 import { useTheme } from "../../contexts/ThemeContext";
+import { cardModuleStyles } from "../../styles/componentStyles";
 
-export default function ModuleCard({ module }) {
+export default function ModuleCard({ module, onPress }) {
   const { theme } = useTheme();
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={onPress}>
       <LinearGradient
         colors={["#8753A1", "#5F56E2"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: 10,
-          borderRadius: 10,
-        }}
+        style={cardModuleStyles.gradientContainer}
       >
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
+        <View style={cardModuleStyles.rowContainer}>
           <Image
             source={{
               uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHC_8-EMZFLsoGfcdsw3cR7IS3DmOf7tgoJg&s",
             }}
-            style={{ width: 40, height: 40, borderRadius: 5 }}
+            style={cardModuleStyles.imgSize}
           />
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              marginLeft: 10,
-            }}
-          >
+          <View style={cardModuleStyles.columnContainer}>
             <Text
-              style={{
-                color: theme.text,
-                fontFamily: theme.fonts.regular,
-                fontSize: 16,
-                fontWeight: "bold",
-              }}
+              style={[
+                {
+                  color: theme.text,
+                  fontFamily: theme.fonts.regular,
+                },
+                cardModuleStyles.titleText,
+              ]}
             >
               Machine Learning
             </Text>
             <Text
-              style={{
-                color: theme.text,
-                fontFamily: theme.fonts.regular,
-                fontSize: 12,
-              }}
+              style={[
+                {
+                  color: theme.text,
+                  fontFamily: theme.fonts.regular,
+                },
+                cardModuleStyles.descriptionText,
+              ]}
             >
               Introduction to AI
             </Text>
           </View>
         </View>
-        <View
-          style={{
-            display: "flex",
-            alignItems: "center",
-            flexDirection: "row",
-            gap: 2,
-            padding: 8,
-            borderRadius: 12,
-            borderColor: "#FFFFFF",
-            borderWidth: 1,
-            backgroundColor: "rgba(255, 255, 255, 0.25)",
-          }}
-        >
+        <View style={cardModuleStyles.subscriberContainer}>
           <IonIcons name="bookmarks-outline" size={12} color="#FFFFFF" />
-          <Text style={{ color: "#FFFFFF", fontSize: 12 }}>1K</Text>
+          <Text style={cardModuleStyles.subscriberText}>1K</Text>
         </View>
       </LinearGradient>
     </TouchableOpacity>

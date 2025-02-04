@@ -2,79 +2,98 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import IonIcons from "@expo/vector-icons/Ionicons";
 import { useTheme } from "../contexts/ThemeContext";
 import FeatureCard from "./cards/FeatureCard";
+import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import axios from "../config/axiosInstance";
+import { featuredModuleStyles } from "../styles/componentParentStyles";
+import { tranparentBtnStyles } from "../styles/componentStyles";
 
 export default function FeaturedModule() {
   const { theme } = useTheme();
+  const [loading, setLoading] = useState(true);
+  const [res, setRes] = useState([]);
+
+  async function fetchFeaturedModules() {
+    try {
+      const { data } = await axios({
+        method: "GET",
+        url: "/api/modules/pub/featured",
+      });
+      setRes(data);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    fetchFeaturedModules();
+  }, []);
+
   return (
-    <View
-      style={{
-        marginTop: 20,
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <View
-        style={{
-          alignItems: "center",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <Text
-          style={{
-            color: theme.text,
-            fontFamily: theme.fonts.regular,
-            fontSize: 16,
-            fontWeight: "bold",
-          }}
+    <>
+      {loading ? (
+        <>
+          <Text>Loading ...</Text>
+        </>
+      ) : (
+        <View
+          style={featuredModuleStyles.mainContainer}
         >
-          Featured Module
-        </Text>
-
-        {/* View all button */}
-        <TouchableOpacity
-          style={{
-            paddingVertical: 2,
-            paddingHorizontal: 10,
-            borderColor: "#FBA459",
-            borderWidth: 1,
-            borderRadius: 8,
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <IonIcons name="chevron-down-outline" size={20} color="#FBA459" />
-          <Text
-            style={{
-              color: theme.text,
-              fontFamily: theme.fonts.regular,
-              fontSize: 10,
-              marginLeft: 5,
-            }}
+          <View
+            style={featuredModuleStyles.titleContainer}
           >
-            View All
-          </Text>
-        </TouchableOpacity>
-      </View>
+            <Text
+              style={{
+                color: theme.text,
+                fontFamily: theme.fonts.regular,
+                fontSize: 16,
+                fontWeight: "bold",
+              }}
+            >
+              Featured Module
+            </Text>
 
-      {/* Featured Module List */}
-      <View
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          gap: 12,
-          marginTop: 10,
-        }}
-      >
-        <FeatureCard />
-        <FeatureCard />
-        <FeatureCard />
-        <FeatureCard />
-      </View>
-    </View>
+            {/* View all button */}
+            <TouchableOpacity
+              onPress={() => navigation.navigate("PublicModule")}
+              style={tranparentBtnStyles.mainContainer}
+            >
+              <Text
+                style={{
+                  color: theme.text,
+                  fontFamily: theme.fonts.regular,
+                  fontSize: 10,
+                  marginLeft: 5,
+                }}
+              >
+                View All
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Featured Module List */}
+          <View
+            style={featuredModuleStyles.featureCardContainer}
+          >
+            {/* {res.data.modules.map((module) => {
+              return (
+                <FeatureCard
+                  module={module}
+                  key={module._id}
+                  onPress={() =>
+                    navigation.navigate("PublicModuleDetail", {
+                      _id: module._id,
+                    })
+                  }
+                />
+              );
+            })} */}
+          </View>
+        </View>
+      )}
+    </>
   );
 }

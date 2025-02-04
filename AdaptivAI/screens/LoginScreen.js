@@ -1,6 +1,7 @@
 
 import { useTheme } from "../contexts/ThemeContext";
 import {
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -12,10 +13,35 @@ import { FormInputStyles } from "../styles/componentStyles";
 import Button from "../components/buttons/Button";
 import Divider from "../components/Divider";
 import { useNavigation } from "@react-navigation/native";
+import { useContext, useState } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import axios from "../config/axiosInstance";
 
 export default function LoginScreen() {
   const { theme } = useTheme();
   const navigation = useNavigation();
+  // const {setIsLoggedIn} = useContext(AuthContext);
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState(""); 
+
+  // const handleLogin = async () => {
+  //   try {
+  //     const {data} = await axios({
+  //       method: "POST",
+  //       url: "/api/users/login",
+  //       data: {
+  //         email,
+  //         password,
+  //       },
+  //     })
+  //     setIsLoggedIn(true);
+  //     const access_token = data.data.access_token;
+  //     navigation.navigate("Dashboard");
+  //     console.log(data)
+  //   } catch (err) {
+  //     Alert.alert("Error", err.response.data.message);
+  //   }
+  // }
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -46,17 +72,14 @@ export default function LoginScreen() {
 
       {/* Login Form */}
       <View
-        style={{
-          justifyContent: "center",
-          marginTop: 40,
-          marginBottom: 60,
-          gap: 20,
-          width: 280,
-        }}
+        style={FormInputStyles.formContainer}
       >
         {/* Username Input */}
         <View style={FormInputStyles.inputContainer}>
-          <TextInput style={FormInputStyles.inputText} placeholder="Username" />
+          <TextInput style={FormInputStyles.inputText} placeholder="Username" 
+          // onChangeText={setEmail}
+          // value={email}]
+          />
         </View>
 
         {/* Password Input */}
@@ -65,19 +88,21 @@ export default function LoginScreen() {
             style={FormInputStyles.inputText}
             placeholder="Password"
             secureTextEntry={true}
+            // onChangeText={setPassword}
+            // value={password}
           />
         </View>
 
         {/* Sign In Button*/}
-        <View style={{ width: 280, height: 50, display: "flex" }}>
-          <GradientButton text={"Sign In"} onPress={() => {navigation.navigate("Home")}} />
+        <View style={FormInputStyles.btn}>
+          <GradientButton text={"Sign In"} onPress={() => navigation.navigate("Dashboard")} />
         </View>
 
         {/* Divider */}
         <Divider />
 
         {/* Sign Up Button*/}
-        <View style={{ width: 280, height: 50, display: "flex" }}>
+        <View style={FormInputStyles.btn}>
           <Button text={"Sign Up"} color={"gray"} onPress={() => navigation.navigate("Register")} />
         </View>
       </View>
