@@ -8,7 +8,7 @@ import axios from "../config/axiosInstance";
 
 export default function PublicModuleDetailScreen({ route }) {
   const { theme } = useTheme();
-  // const { _id } = route.params;
+  const { _id } = route.params;
   const [loading, setLoading] = useState(true);
   const [res, setRes] = useState({});
   const [page, setPage] = useState(0);
@@ -29,6 +29,7 @@ export default function PublicModuleDetailScreen({ route }) {
   }
 
   useEffect(() => {
+    console.log(_id)
     fetchModule();
 
     console.log(res);
@@ -54,7 +55,7 @@ export default function PublicModuleDetailScreen({ route }) {
           >
             <Image
               source={{
-                uri: `https://image.pollinations.ai/prompt/illustrationofmodule?width=200&height=320&nologo=true`,
+                uri: `https://image.pollinations.ai/prompt/moduleillustrationof${res.title}?width=200&height=320&nologo=true`,
               }}
               style={{
                 position: "absolute",
@@ -93,7 +94,7 @@ export default function PublicModuleDetailScreen({ route }) {
                   fontSize: 12,
                 }}
               >
-                by User Name 1
+                {res.createdBy}
               </Text>
               <View
                 style={{
@@ -117,7 +118,7 @@ export default function PublicModuleDetailScreen({ route }) {
                       fontWeight: "bold",
                     }}
                   >
-                    {/* {res.title} */}
+                    {res.title}
                   </Text>
                   <Text
                     style={{
@@ -126,7 +127,7 @@ export default function PublicModuleDetailScreen({ route }) {
                       fontWeight: 200,
                     }}
                   >
-                    {/* {res.description} */}
+                    {res.description}
                   </Text>
                 </View>
                 <View
@@ -186,7 +187,7 @@ export default function PublicModuleDetailScreen({ route }) {
                   marginVertical: 10,
                 }}
               >
-                {/* {res.chapters[page].title} */}
+                {res.chapters[page].title}
               </Text>
               <Text
                 style={{
@@ -194,7 +195,7 @@ export default function PublicModuleDetailScreen({ route }) {
                   fontSize: 12,
                 }}
               >
-                {/* {res.chapters[page].excerpt} */}
+                {res.chapters[page].excerpt}
               </Text>
             </View>
           </View>
@@ -217,8 +218,7 @@ export default function PublicModuleDetailScreen({ route }) {
                 },
                 {
                   width: `${
-                    // (res.chapters[page].order / res.chapters.length) * 100
-                  100}%`,
+                    (res.chapters[page].order / res.chapters.length) * 100}%`,
                 },
               ]}
             />
@@ -231,7 +231,7 @@ export default function PublicModuleDetailScreen({ route }) {
                 color: "#2D2784",
               }}
             >
-              {/* {`${res.chapters[page].order}/${res.chapters.length}`} */}
+              {`${res.chapters[page].order}/${res.chapters.length}`}
             </Text>
           </View>
 

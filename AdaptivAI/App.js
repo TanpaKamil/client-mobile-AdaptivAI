@@ -5,11 +5,12 @@ import { AuthProvider } from "./contexts/AuthContext";
 
 export default function App() {
   return (
-      <ThemeProvider>
+    <ThemeProvider>
+      <AuthProvider>
         <NavigationContainer>
           <RootStack />
         </NavigationContainer>
-      </ThemeProvider>
-
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

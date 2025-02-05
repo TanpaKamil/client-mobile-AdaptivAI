@@ -1,14 +1,49 @@
 import { useTheme } from "../contexts/ThemeContext";
-import { Image, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Image, StyleSheet, Text, TextInput, View } from "react-native";
 import GradientButton from "../components/buttons/GradientButton";
 import { FormInputStyles } from "../styles/componentStyles";
 import Button from "../components/buttons/Button";
 import Divider from "../components/Divider";
 import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
+import axios from "../config/axiosInstance";
 
 export default function RegisterScreen() {
   const { theme } = useTheme();
   const navigation = useNavigation();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+
+  const hadleRegister = async () => {
+    try {
+      if (!email || !password || !passwordConfirmation) {
+        Alert.alert("Error", "Please fill all fields");
+        throw new Error({
+          data: {
+            message: "Please fill all fields",
+          },
+        });
+      }
+      if (password !== passwordConfirmation) {
+        Alert.alert("Error", "Password and password confirmation do not match");
+        throw new Error( "Password and password confirmation do not match");
+      }
+      const { data } = await axios({
+        method: "POST",
+        url: "/api/users/register",
+        data: {
+          email,
+          password,
+        },
+      });
+      navigation.navigate("Login");
+      Alert.alert("Success", "Account created successfully");
+    } catch (err) {
+      Alert.alert("Error", err.response.data.message);
+    }
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -41,7 +76,12 @@ export default function RegisterScreen() {
       <View style={FormInputStyles.formContainer}>
         {/* Username Input */}
         <View style={FormInputStyles.inputContainer}>
-          <TextInput style={FormInputStyles.inputText} placeholder="Username" />
+          <TextInput
+            style={FormInputStyles.inputText}
+            placeholder="email"
+            onChangeText={setEmail}
+            value={email}
+          />
         </View>
 
         {/* Password Input */}
@@ -50,6 +90,8 @@ export default function RegisterScreen() {
             style={FormInputStyles.inputText}
             placeholder="Password"
             secureTextEntry={true}
+            onChangeText={setPassword}
+            value={password}
           />
         </View>
 
@@ -59,12 +101,17 @@ export default function RegisterScreen() {
             style={FormInputStyles.inputText}
             placeholder="Password Confirmation"
             secureTextEntry={true}
+            onChangeText={setPasswordConfirmation}
+            value={passwordConfirmation}
           />
         </View>
 
         {/* Sign In Button*/}
         <View style={FormInputStyles.btn}>
-          <GradientButton text={"Create an Account"} onPress={() => {}} />
+          <GradientButton
+            text={"Create an Account"}
+            onPress={() => hadleRegister()}
+          />
         </View>
 
         {/* Divider */}

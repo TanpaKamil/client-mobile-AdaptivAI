@@ -135,6 +135,7 @@ export const cardModuleStyles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 10,
     borderRadius: 10,
+    marginBottom: 10,
   },
   rowContainer: {
     display: "flex",
@@ -150,6 +151,7 @@ export const cardModuleStyles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     marginLeft: 10,
+    width: 200,
   },
   subscriberContainer: {
     display: "flex",
@@ -167,11 +169,11 @@ export const cardModuleStyles = StyleSheet.create({
     fontSize: 12,
   },
   titleText: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: "bold",
   },
   descriptionText: {
-    fontSize: 12,
+    fontSize: 11,
   },
 });
 

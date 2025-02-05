@@ -16,32 +16,35 @@ import { useNavigation } from "@react-navigation/native";
 import { useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import axios from "../config/axiosInstance";
+import * as SecureStore from "expo-secure-store";
 
 export default function LoginScreen() {
   const { theme } = useTheme();
   const navigation = useNavigation();
-  // const {setIsLoggedIn} = useContext(AuthContext);
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState(""); 
+  const {setIsLogin} = useContext(AuthContext);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState(""); 
 
-  // const handleLogin = async () => {
-  //   try {
-  //     const {data} = await axios({
-  //       method: "POST",
-  //       url: "/api/users/login",
-  //       data: {
-  //         email,
-  //         password,
-  //       },
-  //     })
-  //     setIsLoggedIn(true);
-  //     const access_token = data.data.access_token;
-  //     navigation.navigate("Dashboard");
-  //     console.log(data)
-  //   } catch (err) {
-  //     Alert.alert("Error", err.response.data.message);
-  //   }
-  // }
+  const handleLogin = async () => {
+    try {
+      const {data} = await axios({
+        method: "POST",
+        url: "/api/users/login",
+        data: {
+          email,
+          password,
+        },
+      })
+      setIsLogin(true);
+      const access_token = data.data.token
+      await SecureStore.setItemAsync("access_token", access_token);
+      // navigation.navigate("Dashboard");
+      // console.log(data)
+    } catch (err) {
+      console.log(err)
+      Alert.alert("Error", err.response.data.message);
+    }
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -77,8 +80,8 @@ export default function LoginScreen() {
         {/* Username Input */}
         <View style={FormInputStyles.inputContainer}>
           <TextInput style={FormInputStyles.inputText} placeholder="Username" 
-          // onChangeText={setEmail}
-          // value={email}]
+          onChangeText={setEmail}
+          value={email}
           />
         </View>
 
@@ -88,14 +91,14 @@ export default function LoginScreen() {
             style={FormInputStyles.inputText}
             placeholder="Password"
             secureTextEntry={true}
-            // onChangeText={setPassword}
-            // value={password}
+            onChangeText={setPassword}
+            value={password}
           />
         </View>
 
         {/* Sign In Button*/}
         <View style={FormInputStyles.btn}>
-          <GradientButton text={"Sign In"} onPress={() => navigation.navigate("Dashboard")} />
+          <GradientButton text={"Sign In"} onPress={() => handleLogin()} />
         </View>
 
         {/* Divider */}

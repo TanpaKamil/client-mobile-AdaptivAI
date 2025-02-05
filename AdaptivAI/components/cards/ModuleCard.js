@@ -17,7 +17,7 @@ export default function ModuleCard({ module, onPress }) {
         <View style={cardModuleStyles.rowContainer}>
           <Image
             source={{
-              uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHC_8-EMZFLsoGfcdsw3cR7IS3DmOf7tgoJg&s",
+              uri: "https://image.pollinations.ai/prompt/illustrationof" + module.title + "?width=200&height=320&nologo=true",
             }}
             style={cardModuleStyles.imgSize}
           />
@@ -31,7 +31,7 @@ export default function ModuleCard({ module, onPress }) {
                 cardModuleStyles.titleText,
               ]}
             >
-              Machine Learning
+              {module.title}
             </Text>
             <Text
               style={[
@@ -42,13 +42,13 @@ export default function ModuleCard({ module, onPress }) {
                 cardModuleStyles.descriptionText,
               ]}
             >
-              Introduction to AI
+              By : {module.createdBy}
             </Text>
           </View>
         </View>
         <View style={cardModuleStyles.subscriberContainer}>
           <IonIcons name="bookmarks-outline" size={12} color="#FFFFFF" />
-          <Text style={cardModuleStyles.subscriberText}>1K</Text>
+          <Text style={cardModuleStyles.subscriberText}>{module.totalSubscribers}</Text>
         </View>
       </LinearGradient>
     </TouchableOpacity>

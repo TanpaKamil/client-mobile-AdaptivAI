@@ -1,14 +1,43 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ButtonGenerate from "../components/buttons/ButtonGenerate";
 import { useTheme } from "../contexts/ThemeContext";
 import SearchBar from "../components/SearchInput";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ModuleCard from "../components/cards/ModuleCard";
 import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import axios from "../config/axiosInstance";
 
 export default function PublicModuleScreen() {
   const { theme } = useTheme();
   const navigation = useNavigation();
+  const [res, setRes] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  async function fetchPubModules() {
+    try {
+      const { data } = await axios({
+        method: "GET",
+        url: "/api/modules/pub",
+      });
+      setRes(data.data);
+      // console.log(data.data);
+    } catch (err) {
+      Alert.alert("Error", err.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchPubModules();
+    // console.log(res.modules);
+  }, []);
+
+  if (loading) {
+    return <Text>Loading ...</Text>;
+  }
+
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={{ flex: 1, marginTop: 20, width: "100%" }}>
@@ -61,11 +90,13 @@ export default function PublicModuleScreen() {
               </Text>
 
               {/* View all button */}
-              <View style={{
-                display:"flex",
-                flexDirection: "row",
-                gap: "10"
-              }}>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: "10",
+                }}
+              >
                 <TouchableOpacity
                   style={{
                     paddingVertical: 2,
@@ -128,18 +159,18 @@ export default function PublicModuleScreen() {
           </View>
 
           {/* Module List Map */}
-          <View style={{
-            display: "flex",
-            gap: 10
-          }}>
-            <ModuleCard onPress={() => navigation.navigate("PublicModuleDetail")}/>
-            <ModuleCard />
-            <ModuleCard />
-            <ModuleCard />
-            <ModuleCard />
-            <ModuleCard />
-            <ModuleCard />
-            <ModuleCard />
+          <FlatList
+            data={res.modules}
+            renderItem={({ item }) => <ModuleCard module={item} key={item._id} onPress={() => navigation.navigate("PublicModuleDetail", {
+              _id: item._id,
+            })}/>}
+          />
+          <View
+            style={{
+              display: "flex",
+              gap: 10,
+            }}
+          >
           </View>
         </View>
       </View>
