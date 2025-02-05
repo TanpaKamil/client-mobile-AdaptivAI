@@ -24,7 +24,7 @@ export default function FeatureCard({ module, onPress }) {
           cardFeaturedModuleStyles.text,
         ]}
       >
-        {module.title} {module._id}
+        {module.title}
       </Text>
     </TouchableOpacity>
   );

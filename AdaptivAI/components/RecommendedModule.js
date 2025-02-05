@@ -21,9 +21,9 @@ export default function RecommendedModule() {
       </Text>
       {/* Module List */}
       <View style={recommededModuleStyles.cardContainer}>
+        {/* <ModuleCard onPress={() => navigation.navigate("PublicModuleDetail")} />
         <ModuleCard onPress={() => navigation.navigate("PublicModuleDetail")} />
-        <ModuleCard onPress={() => navigation.navigate("PublicModuleDetail")} />
-        <ModuleCard onPress={() => navigation.navigate("PublicModuleDetail")} />
+        <ModuleCard onPress={() => navigation.navigate("PublicModuleDetail")} /> */}
       </View>
     </View>
   );

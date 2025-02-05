@@ -10,9 +10,15 @@ import CurrentModule from "../components/CurrentModule";
 import RecommendedModule from "../components/RecommendedModule";
 import FeaturedModule from "../components/FeaturedModule";
 import DiscussionFeatured from "../components/DiscussionFeatured";
+import { useEffect } from "react";
+import * as SecureStore from "expo-secure-store";
 
 export default function HomeScreen() {
   const { theme } = useTheme();
+
+  useEffect(() => {
+    console.log(SecureStore.getItemAsync("access_token"));
+  },[])
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <ScrollView>

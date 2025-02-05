@@ -3,7 +3,7 @@ import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import TabNavigator from "./TabNavigator";
 import PublicModuleScreen from "../screens/PublicModuleScreen";
-import { Image } from "react-native";
+import { ActivityIndicator, Image, Text, View } from "react-native";
 import PublicModuleDetailScreen from "../screens/PublicModuleDetail";
 import ChapterScreen from "../screens/ChapterScreen";
 import MyModuleDetail from "../screens/MyModuleDetail";
@@ -12,9 +12,49 @@ import StartDiscussionScreen from "../screens/StartDiscussion.js";
 import DiscussionDetail from "../screens/DiscussionDetail.js";
 import DiscussionScreen from "../screens/DiscussionScreen.js";
 import EditProfileScreen from "../screens/EditProfileScreen.js";
+import { AuthContext } from "../contexts/AuthContext.js";
+import { useContext, useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import * as SecureStore from "expo-secure-store";
 
 const Stack = createNativeStackNavigator();
+
 export default function RootStack() {
+  const { isLogin, setIsLogin } = useContext(AuthContext);
+  const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkLogin = async () => {
+      try {
+        const access_token = await SecureStore.getItemAsync("access_token");
+        if (access_token) {
+          setIsLogin(true);
+        }
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkLogin();
+  }, []);
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator size={"large"} color={"#3a5795"} />
+        <Text>Loading ...</Text>
+      </View>
+    );
+  }
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -35,92 +75,98 @@ export default function RootStack() {
         ),
       }}
     >
-      <Stack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
+      {isLogin ? (
+        <>
+          <Stack.Screen
+            name="Dashboard"
+            component={TabNavigator}
+            options={{
+              headerShown: false,
+            }}
+          />
 
-      <Stack.Screen
-        name="Register"
-        component={RegisterScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
+          <Stack.Screen
+            name="PublicModule"
+            component={PublicModuleScreen}
+            options={{
+              headerShown: true,
+            }}
+          />
 
-      <Stack.Screen
-        name="Dashboard"
-        component={TabNavigator}
-        options={{
-          headerShown: false,
-        }}
-      />
+          <Stack.Screen
+            name="PublicModuleDetail"
+            component={PublicModuleDetailScreen}
+            options={{
+              headerShown: true,
+            }}
+          />
 
-      <Stack.Screen
-        name="PublicModule"
-        component={PublicModuleScreen}
-        options={{
-          headerShown: true,
-        }}
-      />
+          <Stack.Screen
+            name="Chapters"
+            component={MyModuleDetail}
+            options={{
+              headerShown: true,
+            }}
+          />
+          <Stack.Screen
+            name="Chapter"
+            component={ChapterScreen}
+            options={{
+              headerShown: true,
+            }}
+          />
 
-      <Stack.Screen
-        name="PublicModuleDetail"
-        component={PublicModuleDetailScreen}
-        options={{
-          headerShown: true,
-        }}
-      />
+          <Stack.Screen
+            name="Assessment"
+            component={AssessmentScreen}
+            options={{
+              headerShown: true,
+            }}
+          />
 
-      <Stack.Screen
-        name="Chapters"
-        component={MyModuleDetail}
-        options={{
-          headerShown: true,
-        }}
-      />
-      <Stack.Screen
-        name="Chapter"
-        component={ChapterScreen}
-        options={{
-          headerShown: true,
-        }}
-      />
+          <Stack.Screen
+            name="StartDiscussion"
+            component={StartDiscussionScreen}
+            options={{
+              headerShown: true,
+            }}
+          />
 
-      <Stack.Screen
-        name="Assessment"
-        component={AssessmentScreen}
-        options={{
-          headerShown: true,
-        }}
-      />
+          <Stack.Screen
+            name="DiscussionDetail"
+            component={DiscussionDetail}
+            options={{
+              headerShown: true,
+            }}
+          />
 
-      <Stack.Screen
-        name="StartDiscussion"
-        component={StartDiscussionScreen}
-        options={{
-          headerShown: true,
-        }}
-      />
+          <Stack.Screen
+            name="EditProfile"
+            component={EditProfileScreen}
+            options={{
+              headerShown: true,
+            }}
+          />
+        </>
+      ) : (
+        <>
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
 
-      <Stack.Screen
-        name="DiscussionDetail"
-        component={DiscussionDetail}
-        options={{
-          headerShown: true,
-        }}
-      />
-
-      <Stack.Screen
-        name="EditProfile"
-        component={EditProfileScreen}
-        options={{
-          headerShown: true,
-        }}
-      />
+          <Stack.Screen
+            name="Register"
+            component={RegisterScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </>
+      )}
     </Stack.Navigator>
   );
 }

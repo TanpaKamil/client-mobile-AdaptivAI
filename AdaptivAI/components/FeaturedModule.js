@@ -12,6 +12,7 @@ export default function FeaturedModule() {
   const { theme } = useTheme();
   const [loading, setLoading] = useState(true);
   const [res, setRes] = useState([]);
+  const navigation = useNavigation();
 
   async function fetchFeaturedModules() {
     try {
@@ -26,7 +27,6 @@ export default function FeaturedModule() {
       setLoading(false);
     }
   }
-  const navigation = useNavigation();
 
   useEffect(() => {
     fetchFeaturedModules();
@@ -39,12 +39,8 @@ export default function FeaturedModule() {
           <Text>Loading ...</Text>
         </>
       ) : (
-        <View
-          style={featuredModuleStyles.mainContainer}
-        >
-          <View
-            style={featuredModuleStyles.titleContainer}
-          >
+        <View style={featuredModuleStyles.mainContainer}>
+          <View style={featuredModuleStyles.titleContainer}>
             <Text
               style={{
                 color: theme.text,
@@ -75,10 +71,8 @@ export default function FeaturedModule() {
           </View>
 
           {/* Featured Module List */}
-          <View
-            style={featuredModuleStyles.featureCardContainer}
-          >
-            {/* {res.data.modules.map((module) => {
+          <View style={featuredModuleStyles.featureCardContainer}>
+            {res.data.modules.map((module) => {
               return (
                 <FeatureCard
                   module={module}
@@ -90,7 +84,7 @@ export default function FeaturedModule() {
                   }
                 />
               );
-            })} */}
+            })}
           </View>
         </View>
       )}
