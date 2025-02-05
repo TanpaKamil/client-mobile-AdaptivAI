@@ -11,13 +11,13 @@ export default function RecommendedModule() {
   const navigation = useNavigation();
   const [modules, setModules] = useState([]);
   const [loading, setLoading] = useState(true);
+
   async function fetchRecommedModule() {
     try {
       const { data } = await axios({
         method: "GET",
         url: "/api/modules/pub/recommendation",
       });
-
       setModules(data.data);
     } catch (err) {
       console.error(err);
@@ -47,13 +47,15 @@ export default function RecommendedModule() {
       </Text>
       {/* Module List */}
       <View style={recommededModuleStyles.cardContainer}>
-        {modules.modules.map((module) => (
+        {modules?.modules.map((module) => (
           <ModuleCard
             key={module._id}
             module={module}
-            onPress={() => navigation.navigate("PublicModuleScreen", { module })}
+            onPress={() =>
+              navigation.navigate("PublicModuleScreen", { module })
+            }
           />
-        ))} 
+        ))}
       </View>
     </View>
   );

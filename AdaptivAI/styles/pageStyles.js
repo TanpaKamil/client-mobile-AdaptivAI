@@ -42,14 +42,15 @@ export const ProgressCardStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 6,
+    textAlign:"center"
   },
   statusBadge: {
-    paddingVertical: 4,
-    paddingHorizontal: 20,
+    paddingVertical: 2,
+    paddingHorizontal: 10,
     borderRadius: 8,
     backgroundColor: "#FBA459",
     color: "#FFFFFF",
-    fontSize: 12,
+    fontSize: 10,
     textAlign: "left",
   },
   badgeContainer: {
@@ -100,11 +101,14 @@ export const flashCardStyles = StyleSheet.create({
   },
   flashcard: {
     width: 250,
+    minHeight: 200,
     padding: 20,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#FBA459",
     backgroundColor: "#FFFFFF",
+    display: "flex",
+    justifyContent: "center",
   },
   flashcardText: {
     textAlign: "center",

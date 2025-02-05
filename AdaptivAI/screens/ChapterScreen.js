@@ -1,4 +1,10 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import GradientButton from "../components/buttons/GradientButton";
@@ -10,7 +16,7 @@ import { useTheme } from "../contexts/ThemeContext";
 import { useModules } from "../contexts/ModuleContext";
 import { useLoading } from "../contexts/LoadingContext";
 import { useEffect, useState } from "react";
-import { use } from "react";
+import axios from "../config/axiosInstance";
 
 export default function ChapterScreen({ route }) {
   const { theme } = useTheme();
@@ -19,6 +25,10 @@ export default function ChapterScreen({ route }) {
   const { instanceId, chapterId } = route.params;
   const [loading, setLoading] = useState(true);
   const [chapter, setChapter] = useState({});
+  const [side, setSide] = useState("front");
+  const [page, setPage] = useState(0);
+
+  const navigation = useNavigation();
 
   async function fetchChapterById() {
     try {
@@ -26,6 +36,7 @@ export default function ChapterScreen({ route }) {
         method: "GET",
         url: `/api/modules/instances/${instanceId}/chapters/${chapterId}`,
       });
+
       setChapter(data.data.chapter);
       console.log(data.data.chapter);
     } catch (err) {
@@ -33,14 +44,15 @@ export default function ChapterScreen({ route }) {
     } finally {
       setLoading(false);
     }
-
-    useEffect(() => {
-      fetchChapterById();
-    }, []);
-
-    if (loading) return <Text>Loading ...</Text>;
   }
-  const navigation = useNavigation();
+  useEffect(() => {
+    fetchChapterById();
+  }, []);
+
+  if (loading) {
+    return <Text>Loading ...</Text>;
+  }
+
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <ScrollView>
@@ -51,53 +63,77 @@ export default function ChapterScreen({ route }) {
             end={{ x: 1, y: 1 }}
             style={ProgressCardStyles.containerSize}
           >
-            <Text style={ProgressCardStyles.titleText}>Title Chapter 1</Text>
-            <Text style={ProgressCardStyles.progressText}>
-              Description Chapter{" "}
-            </Text>
+            <Text style={ProgressCardStyles.titleText}>{chapter.title}</Text>
 
             <View style={ProgressCardStyles.badgeContainer}>
-              <Text style={ProgressCardStyles.statusBadge}>STATUS</Text>
+              <Text style={ProgressCardStyles.statusBadge}>
+                {chapter.progress.status}
+              </Text>
             </View>
           </LinearGradient>
 
           <View style={flashCardStyles.container}>
-            <View style={flashCardStyles.flashcard}>
-              <Text style={flashCardStyles.flashcardText}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                imperdiet odio eget risus lacinia fermentum. Aliquam tempor et
-                urna a vulputate. Duis id erat ut ipsum viverra pulvinar.
-                Praesent nec dapibus lectus, suscipit sodales nulla. Aenean
-                vitae quam varius, pharetra magna eget, vulputate mi. Nullam
-                pharetra mi a venenatis sollicitudin. Praesent volutpat turpis
-                at felis convallis eleifend. Phasellus gravida urna in aliquet
-                facilisis. Nulla efficitur magna rutrum neque bibendum
-                tincidunt. Praesent gravida sed tellus nec facilisis. Aliquam
-                orci tellus, accumsan ut odio vel, suscipit porttitor tortor.
-                Vivamus malesuada, felis nec facilisis tempor, neque lectus
-                fringilla arcu, sed elementum neque arcu sed enim.
+            <TouchableOpacity
+              style={flashCardStyles.flashcard}
+              onPress={() =>
+                side === "front" ? setSide("back") : setSide("front")
+              }
+            >
+              <Text
+                style={[
+                  flashCardStyles.flashcardText,
+                  { fontSize: 18, marginBottom: 20 },
+                ]}
+              >
+                {chapter.content.summaries[page].content}
               </Text>
-            </View>
+
+              <Text style={flashCardStyles.flashcardText}>
+                {side === "front"
+                  ? chapter.content.summaries[page].flashcardFront
+                  : chapter.content.summaries[page].flashcardBack}
+              </Text>
+
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "#5F56E2",
+                  marginTop: 20,
+                }}
+              >
+                {side === "front" ? "Front Side" : "Back Side"}
+              </Text>
+            </TouchableOpacity>
           </View>
 
           <View style={flashCardStyles.orderBar}>
             <View
               style={[
                 {
-                  width: "80%",
+                  width: `${(page / chapter.content.summaries.length) * 100}%`,
                 },
                 flashCardStyles.orderProgress,
               ]}
             />
-            <Text style={flashCardStyles.orderText}>8/10</Text>
+            <Text style={flashCardStyles.orderText}>
+              {page}/{chapter.content.summaries.length - 1}
+            </Text>
           </View>
 
           <View
             style={{
               height: 50,
+              display: "flex",
+              flexDirection: "row",
+              gap: 20,
             }}
           >
-            <GradientButton text={"NEXT"} />
+            <View style={{ flex: 1, display: page === 0 ? "none" : "flex" }}>
+              <GradientButton text={"PREV"} onPress={() => setPage(page - 1)} />
+            </View>
+            <View style={{ flex: 1, display: page === chapter.content.summaries.length - 1 ? "none" : "flex" }}>
+              <GradientButton text={"NEXT"} onPress={() => setPage(page + 1)} />
+            </View>
           </View>
 
           <Text style={styles.dividerText}>Ready To Take Assessment ?</Text>
@@ -110,7 +146,7 @@ export default function ChapterScreen({ route }) {
             <GradientButton
               text={"Take Assessment"}
               onPress={() => {
-                navigation.navigate("Assessment");
+                navigation.navigate("Assessment", {instanceId: instanceId});
               }}
             />
           </View>

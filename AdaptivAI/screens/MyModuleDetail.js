@@ -93,7 +93,7 @@ export default function MyModuleDetail( {route}) {
                 <ChapterCard
                   key={chapter.id}
                   chapter={chapter}
-                  onPress={() => navigation.navigate("Chapter", { chapterId: chapter.id, instnceId: currentModule._id})}
+                  onPress={() => navigation.navigate("Chapter", { instanceId: currentModule.id, chapterId: chapter.id })}
                 />
               );
             })}

@@ -11,7 +11,6 @@ import { useTheme } from "../contexts/ThemeContext";
 import { useModules } from "../contexts/ModuleContext";
 import { useLoading } from "../contexts/LoadingContext";
 
-
 export default function FeaturedModule() {
   const { theme } = useTheme();
   const { fetchModules, modules } = useModules();
@@ -38,62 +37,60 @@ export default function FeaturedModule() {
     fetchFeaturedModules();
   }, []);
 
+  if (loading) {
+    return <Text>Loading ...</Text>;
+  }
+
   return (
     <>
-      {loading ? (
-        <>
-          <Text>Loading ...</Text>
-        </>
-      ) : (
-        <View style={featuredModuleStyles.mainContainer}>
-          <View style={featuredModuleStyles.titleContainer}>
+      <View style={featuredModuleStyles.mainContainer}>
+        <View style={featuredModuleStyles.titleContainer}>
+          <Text
+            style={{
+              color: theme.text,
+              fontFamily: theme.fonts.regular,
+              fontSize: 16,
+              fontWeight: "bold",
+            }}
+          >
+            Featured Module
+          </Text>
+
+          {/* View all button */}
+          <TouchableOpacity
+            onPress={() => navigation.navigate("PublicModule")}
+            style={tranparentBtnStyles.mainContainer}
+          >
             <Text
               style={{
                 color: theme.text,
                 fontFamily: theme.fonts.regular,
-                fontSize: 16,
-                fontWeight: "bold",
+                fontSize: 10,
+                marginLeft: 5,
               }}
             >
-              Featured Module
+              View All
             </Text>
-
-            {/* View all button */}
-            <TouchableOpacity
-              onPress={() => navigation.navigate("PublicModule")}
-              style={tranparentBtnStyles.mainContainer}
-            >
-              <Text
-                style={{
-                  color: theme.text,
-                  fontFamily: theme.fonts.regular,
-                  fontSize: 10,
-                  marginLeft: 5,
-                }}
-              >
-                View All
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Featured Module List */}
-          <View style={featuredModuleStyles.featureCardContainer}>
-            {res.data.modules.map((module) => {
-              return (
-                <FeatureCard
-                  module={module}
-                  key={module._id}
-                  onPress={() =>
-                    navigation.navigate("PublicModuleDetail", {
-                      _id: module._id,
-                    })
-                  }
-                />
-              );
-            })}
-          </View>
+          </TouchableOpacity>
         </View>
-      )}
+
+        {/* Featured Module List */}
+        <View style={featuredModuleStyles.featureCardContainer}>
+          {res?.data.modules.map((module) => {
+            return (
+              <FeatureCard
+                module={module}
+                key={module._id}
+                onPress={() =>
+                  navigation.navigate("PublicModuleDetail", {
+                    _id: module._id,
+                  })
+                }
+              />
+            );
+          })}
+        </View>
+      </View>
     </>
   );
 }
