@@ -50,37 +50,39 @@ export default function EditProfileScreen() {
       formData.append("username", username);
       formData.append("email", email);
 
-      // **Tambahkan gambar hanya jika ada perubahan**
+      // Tambahkan gambar hanya jika ada perubahan
       if (image && image !== user.imageUrl) {
-        const imageData = {
+        // Get file extension from uri
+        const uriParts = image.split('.');
+        const fileType = uriParts[uriParts.length - 1];
+
+        // Create file object for FormData
+        formData.append("image", {
           uri: image,
-          name: "profile.jpg",
-          type: "image/jpeg",
-        };
-        formData.append("image", imageData);
+          name: `profile.${fileType}`,
+          type: `image/${fileType}`
+        });
       }
 
-      await axios({
+      // Kirim request dengan FormData
+      const response = await axios({
         method: "PUT",
         url: "/api/users/" + user._id,
-        formData,
+        data: formData,  // Gunakan 'data' bukan 'formData'
         headers: {
-          Accept: "multipart/form-data",
+          'Content-Type': 'multipart/form-data',  // Header yang benar
         },
       });
-      console.log(formData._parts);
-    } catch (err) {
-      console.log(err);
-    } finally {
+
       await fetchUserProfile();
       navigation.replace("Dashboard", { screen: "Profile" });
+    } catch (err) {
+      console.log(err);
+      showError("Failed to update profile");
+    } finally {
+      stopLoading();
     }
   };
-  useEffect(() => {
-    setUsername(user.username);
-    setEmail(user.email);
-    setImage(user.imageUrl);
-  }, [user]);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -107,7 +109,7 @@ export default function EditProfileScreen() {
 
           {/* Profile Picture */}
           <TouchableOpacity
-          onPress={pickImage}
+            onPress={pickImage}
             style={{
               display: "flex",
               justifyContent: "center",
