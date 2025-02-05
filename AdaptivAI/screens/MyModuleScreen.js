@@ -36,7 +36,7 @@ export default function MyModuleScreen() {
             <View style={{ height: "88%" }}>
               <FlatList
                 data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                renderItem={({ item }) => <UserModuleCard />}
+                renderItem={({ item }) => <UserModuleCard key={item}/>}
               />
             </View>
           </View>

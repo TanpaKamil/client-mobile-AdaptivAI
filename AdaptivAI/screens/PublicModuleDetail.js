@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import SearchBar from "../components/SearchInput";
 import GradientButton from "../components/buttons/GradientButton";
 import { LinearGradient } from "expo-linear-gradient";
@@ -38,7 +38,7 @@ export default function PublicModuleDetailScreen({ route }) {
   }
 
   useEffect(() => {
-    console.log(_id)
+    console.log(_id);
     fetchModule();
 
     console.log(res);
@@ -100,10 +100,11 @@ export default function PublicModuleDetailScreen({ route }) {
               <Text
                 style={{
                   color: "#FFFFFF",
-                  fontSize: 12,
+                  fontSize: 14,
+                  fontStyle: "italic",
                 }}
               >
-                {res.createdBy}
+                by {res.createdBy.username}
               </Text>
               <View
                 style={{
@@ -139,7 +140,8 @@ export default function PublicModuleDetailScreen({ route }) {
                     {res.description}
                   </Text>
                 </View>
-                <View
+                <TouchableOpacity
+                onPress={() => startModuleInstance(res._id)}
                   style={{
                     padding: 6,
                     borderRadius: 40,
@@ -156,7 +158,7 @@ export default function PublicModuleDetailScreen({ route }) {
                   >
                     SUBSCRIBE
                   </Text>
-                </View>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -226,7 +228,9 @@ export default function PublicModuleDetailScreen({ route }) {
                   borderRadius: 20,
                 },
                 {
-                  width: `${(res.chapters[page].order / res.chapters.length) * 100}%`,
+                  width: `${
+                    (res.chapters[page].order / res.chapters.length) * 100
+                  }%`,
                 },
               ]}
             />
@@ -245,10 +249,18 @@ export default function PublicModuleDetailScreen({ route }) {
 
           <View
             style={{
-              height: 50,
+              height: 40,
+              display: "flex",
+              flexDirection: "row",
+              gap: 20,
             }}
           >
-            <GradientButton text={"NEXT"} onPress={() => setPage(page + 1)} />
+            <View style={{ flex: 1, display: page === 0 ? "none" : "flex"}}>
+              <GradientButton text={"PREV"} onPress={() => setPage(page - 1)} />
+            </View>
+            <View style={{ flex: 1, display: page === res.chapters.length - 1 ? "none" : "flex"}}>
+              <GradientButton text={"NEXT"} onPress={() => setPage(page + 1)} />
+            </View>
           </View>
         </View>
       </View>

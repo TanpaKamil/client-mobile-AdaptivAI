@@ -3,6 +3,7 @@ import {
   Image,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -12,12 +13,92 @@ import { useTheme } from "../contexts/ThemeContext";
 import { useDiscussions } from "../contexts/DiscussionContext";
 import { useAuth } from "../contexts/AuthContext";
 import { useError } from "../contexts/ErrorContext";
+import axios from "../config/axiosInstance";
+import { use, useEffect, useState } from "react";
+import Button from "../components/buttons/Button";
 
 export default function DiscussionDetail({ route }) {
   const { theme } = useTheme();
   const { discussions, addComment, toggleLike } = useDiscussions();
   const { user } = useAuth();
   const { showError } = useError();
+  const { id } = route.params;
+  const [discussionById, setDiscussionById] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [commentForm, setCommentForm] = useState(false);
+  const [commentContent, setCommentContent] = useState("");
+  const [contentPost, setContentPost] = useState({
+    content: "",
+  });
+
+  async function fetchDiscussionById() {
+    try {
+      console.log(id);
+      const { data } = await axios({
+        method: "GET",
+        url: `/api/discussions/${id}`,
+      });
+      console.log(data);
+      setDiscussionById(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function toggleLikeHandler() {
+    try {
+      toggleLike(discussionById._id);
+      fetchDiscussionById();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function addCommentHandler() {
+    try {
+      await addComment(discussionById._id, commentContent);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      fetchDiscussionById();
+      setCommentContent("");
+      setCommentForm(false);
+    }
+  }
+
+  async function editPost() {
+    try {
+      // const formData = new FormData();
+      // formData.append("content", contentPost.content);
+
+      await axios({
+        method: "PUT",
+        url: `/api/discussions/${discussionById._id}`,
+        data: {
+          content: contentPost.content,
+        },
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        
+      })
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setContentPost({ content: "" });
+      fetchDiscussionById();
+    }
+  }
+
+  useEffect(() => {
+    fetchDiscussionById();
+  }, []);
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -50,7 +131,10 @@ export default function DiscussionDetail({ route }) {
             <View style={{ display: "flex", flexDirection: "row" }}>
               <Image
                 source={{
-                  uri: `https://image.pollinations.ai/prompt/personprofilepicture?width=200&height=320&nologo=true`,
+                  uri:
+                    "https://image.pollinations.ai/prompt/profileof" +
+                    discussionById?.userId?.username +
+                    "?width=200&height=320&nologo=true",
                 }}
                 style={{
                   width: 36,
@@ -72,7 +156,7 @@ export default function DiscussionDetail({ route }) {
                     fontWeight: "bold",
                   }}
                 >
-                  Author
+                  {discussionById.userId.username}
                 </Text>
                 <Text
                   style={{
@@ -81,7 +165,7 @@ export default function DiscussionDetail({ route }) {
                   }}
                 >
                   {" "}
-                  31 January 2025 13:30
+                  {discussionById.createdAt}
                 </Text>
               </View>
             </View>
@@ -92,7 +176,7 @@ export default function DiscussionDetail({ route }) {
                 marginVertical: 4,
               }}
             >
-              Title Post
+              {discussionById.title}
             </Text>
             <View
               style={{
@@ -110,7 +194,9 @@ export default function DiscussionDetail({ route }) {
                 }}
               >
                 <Ionicons name="heart-outline" size={12} color="gray" />
-                <Text style={{ fontSize: 10, marginLeft: 4 }}>16</Text>
+                <Text style={{ fontSize: 10, marginLeft: 4 }}>
+                  {discussionById.likes_length}
+                </Text>
               </View>
 
               <View
@@ -121,25 +207,37 @@ export default function DiscussionDetail({ route }) {
                 }}
               >
                 <Ionicons name="chatbubble-outline" size={12} color="gray" />
-                <Text style={{ fontSize: 10, marginLeft: 4 }}>16</Text>
+                <Text style={{ fontSize: 10, marginLeft: 4 }}>
+                  {discussionById.comments_length}
+                </Text>
               </View>
             </View>
-            <Text
-              style={{
-                textAlign: "justify",
-                fontSize: 12,
-              }}
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-              imperdiet odio eget risus lacinia fermentum. Aliquam tempor et
-              urna a vulputate. Duis id erat ut ipsum viverra pulvinar. Praesent
-              nec dapibus lectus, suscipit sodales nulla. Aenean vitae quam
-              varius, pharetra magna eget, vulputate mi. Nullam pharetra mi a
-              venenatis sollicitudin. Praesent volutpat turpis at felis
-              convallis eleifend. Phasellus gravida urna in aliquet facilisis.
-              Nulla efficitur magna rutrum neque bibendum tincidunt. Praesent
-              gravida sed tellus nec facilisis.
-            </Text>
+            {contentPost.content ? (
+              <TextInput
+                style={{
+                  textAlign: "justify",
+                  fontSize: 12,
+                  borderWidth: 1,
+                  marginBottom: 10,
+                  borderRadius: 5,
+                  borderColor: "#FBA459",
+                  padding: 5,
+                }}
+                multiline={true}
+                onChangeText={(text) => setContentPost({ content: text })}
+                value={contentPost.content}
+              ></TextInput>
+            ) : (
+              <Text
+                style={{
+                  textAlign: "justify",
+                  fontSize: 12,
+                }}
+              >
+                {discussionById.content}
+              </Text>
+            )}
+
             <View
               style={{
                 display: "flex",
@@ -149,6 +247,7 @@ export default function DiscussionDetail({ route }) {
               }}
             >
               <TouchableOpacity
+                onPress={() => toggleLikeHandler()}
                 style={{
                   paddingHorizontal: 10,
                   paddingVertical: 2,
@@ -164,6 +263,7 @@ export default function DiscussionDetail({ route }) {
               </TouchableOpacity>
 
               <TouchableOpacity
+                onPress={() => setCommentForm(true)}
                 style={{
                   paddingHorizontal: 10,
                   paddingVertical: 2,
@@ -179,7 +279,72 @@ export default function DiscussionDetail({ route }) {
               </TouchableOpacity>
             </View>
           </View>
+          <View
+            style={{
+              display: commentForm ? "flex" : "none",
+              marginTop: 10,
+              backgroundColor: "#FBA459",
+              padding: 10,
+              borderRadius: 8,
+            }}
+          >
+            <Text
+              style={{
+                color: "#FFFFFF",
+                fontSize: 12,
+                fontWeight: "bold",
+              }}
+            >
+              Comments :
+            </Text>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                padding: 5,
+                marginTop: 5,
+                marginBottom: 5,
+                justifyContent: "space-between",
+              }}
+            >
+              <TextInput
+                onChangeText={(text) => setCommentContent(text)}
+                value={commentContent}
+                style={{
+                  borderColor: "#FBA459",
+                  backgroundColor: "#FFFFFF",
+                  borderRadius: 5,
+                  paddingHorizontal: 10,
+                  fontSize: 12,
+                  width: "80%",
+                  height: 40,
+                }}
+                placeholder="input comment .."
+              />
 
+              <TouchableOpacity
+                onPress={() => addCommentHandler()}
+                style={{
+                  paddingHorizontal: 10,
+                  borderRadius: 5,
+                  backgroundColor: "#FFFFFF",
+                  gap: 4,
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#FBA459",
+                    fontSize: 10,
+                    textAlignVertical: "center",
+                  }}
+                >
+                  Send
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
           <Text
             style={{
               marginTop: 20,
@@ -193,7 +358,7 @@ export default function DiscussionDetail({ route }) {
 
           <FlatList
             style={{ marginTop: 10, display: "flex", gap: 20, height: 280 }}
-            data={["Discussion 1", "Discussion 2", "Discussion 3", "discussion 4"]}
+            data={discussionById.comments}
             renderItem={({ item }) => (
               <View
                 style={{
@@ -205,7 +370,7 @@ export default function DiscussionDetail({ route }) {
                 <View style={{ display: "flex", flexDirection: "row" }}>
                   <Image
                     source={{
-                      uri: `https://image.pollinations.ai/prompt/imageofrobot?width=200&height=200&nologo=true`,
+                      uri: `https://image.pollinations.ai/prompt/profileof${item.userId.username}?width=200&height=200&nologo=true`,
                     }}
                     style={{
                       width: 36,
@@ -228,7 +393,7 @@ export default function DiscussionDetail({ route }) {
                         color: "#FFFFFF",
                       }}
                     >
-                      Author
+                      {item.userId.username}
                     </Text>
                     <Text
                       style={{
@@ -238,7 +403,7 @@ export default function DiscussionDetail({ route }) {
                       }}
                     >
                       {" "}
-                      31 January 2025 13:30
+                      {item.createdAt}
                     </Text>
                   </View>
                 </View>
@@ -249,9 +414,7 @@ export default function DiscussionDetail({ route }) {
                     marginVertical: 8,
                   }}
                 >
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  imperdiet odio eget risus lacinia fermentum. Aliquam tempor et
-                  urna a vulputate. Duis id erat ut ipsum viverra pulvinar.
+                  {item.content}
                 </Text>
               </View>
             )}
@@ -265,7 +428,19 @@ export default function DiscussionDetail({ route }) {
             marginBottom: 40,
           }}
         >
-          <GradientButton text={"EDIT"} />
+          {contentPost.content ? (
+            <GradientButton
+              text={"SAVE"}
+              onPress={() => editPost()}
+            />
+          ) : (
+            <GradientButton
+              text={"EDIT"}
+              onPress={() =>
+                setContentPost({ content: discussionById.content })
+              }
+            />
+          )}
         </View>
       </View>
     </View>

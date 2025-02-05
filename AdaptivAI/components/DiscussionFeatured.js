@@ -6,11 +6,38 @@ import { tranparentBtnStyles } from "../styles/componentStyles";
 
 import { useTheme } from "../contexts/ThemeContext";
 import { useDiscussions } from "../contexts/DiscussionContext";
+import { useEffect, useState } from "react";
+import axios from "../config/axiosInstance";
 
 export default function DiscussionFeatured() {
   const { theme } = useTheme();
   const { discussions, fetchDiscussions } = useDiscussions();
-  const navigation = useNavigation();
+  const [ featured, setFeatured ] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  async function fetchDiscussionsFeatured() {
+    try {
+      const response = await axios({
+        method: "GET",
+        url: "/api/discussions/featured",
+      });
+      console.log(response.data);
+      setFeatured(response.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchDiscussionsFeatured();
+  }, []);
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
   return (
     <>
       <View style={discussionFeaturedStyles.mainContainer}>
@@ -43,10 +70,15 @@ export default function DiscussionFeatured() {
         </TouchableOpacity>
       </View>
       <View style={discussionFeaturedStyles.cardContainer}>
-        {/* Disccusion Card */}
-        <DiscussionCard />
-        <DiscussionCard />
-        <DiscussionCard />
+            {featured.map((discussion) => {
+              return (
+                <DiscussionCard
+                  key={discussion._id}
+                  discussion={discussion}
+                  style={discussionFeaturedStyles.card}
+                />
+              ); 
+            })}
       </View>
     </>
   );

@@ -10,12 +10,12 @@ export default function DiscussionCard({ discussion }) {
     <TouchableOpacity
       style={CardDiscussionStyles.mainContainer}
       onPress={() => {
-        navigation.navigate("DiscussionDetail");
+        navigation.navigate("DiscussionDetail", {id : discussion._id});
       }}
     >
       <Image
         source={{
-          uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHC_8-EMZFLsoGfcdsw3cR7IS3DmOf7tgoJg&s",
+          uri: (discussion.imgUrl ? discussion.imgUrl : "https://image.pollinations.ai/prompt/illustrationof" + discussion.title + "?width=200&height=320&nologo=true"),
         }}
         style={CardDiscussionStyles.imgSize}
       />
@@ -29,7 +29,7 @@ export default function DiscussionCard({ discussion }) {
             CardDiscussionStyles.TitleText,
           ]}
         >
-          Discussions
+          {discussion.title}
         </Text>
         <Text
           style={[
@@ -39,7 +39,7 @@ export default function DiscussionCard({ discussion }) {
             CardDiscussionStyles.seenText,
           ]}
         >
-          Last reply 2h ago • 5 replies
+          {discussion.likes_length} likes • {discussion.comments_length} replies
         </Text>
       </View>
     </TouchableOpacity>

@@ -32,7 +32,7 @@ export default function PublicModuleScreen() {
     } catch (err) {
       Alert.alert("Error", err.response.data.message);
     } finally {
-      setLoading(false);
+      stopLoading();
     }
   }
 
@@ -41,7 +41,7 @@ export default function PublicModuleScreen() {
     // console.log(res.modules);
   }, []);
 
-  if (loading) {
+  if (isLoading) {
     return <Text>Loading ...</Text>;
   }
 

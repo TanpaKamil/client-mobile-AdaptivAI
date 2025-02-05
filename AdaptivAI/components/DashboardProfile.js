@@ -9,6 +9,9 @@ export default function DashboardProfile() {
   const { theme } = useTheme();
   const { user } = useAuth();
 
+  if (!user) {
+    return <Text>Loading...</Text>;
+  }
   // Fecth User Profile Data
   return (
     <View style={dashBoardProfileStyles.mainContainer}>
@@ -22,7 +25,7 @@ export default function DashboardProfile() {
             dashBoardProfileStyles.welcomeText,
           ]}
         >
-          Hello User
+          Hello {user.username} !!
         </Text>
         <Text
           style={{
@@ -36,7 +39,7 @@ export default function DashboardProfile() {
       </View>
       <Image
         source={{
-          uri: "https://plus.unsplash.com/premium_photo-1671656349322-41de944d259b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29ufGVufDB8fDB8fHww",
+          uri: user.imageUrl,
         }}
         style={dashBoardProfileStyles.imgSize}
       />

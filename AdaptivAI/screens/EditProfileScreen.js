@@ -1,16 +1,86 @@
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import GradientButton from "../components/buttons/GradientButton";
 import { useAuth } from "../contexts/AuthContext";
 import { useLoading } from "../contexts/LoadingContext";
 import { useError } from "../contexts/ErrorContext";
 import { useTheme } from "../contexts/ThemeContext";
+import { useEffect, useState } from "react";
+import axios from "../config/axiosInstance";
+import { useNavigation } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker"; // Import Image Picker
 
 export default function EditProfileScreen() {
   const { user, fetchUserProfile } = useAuth();
   const { startLoading, stopLoading } = useLoading();
   const { showError } = useError();
   const { theme } = useTheme();
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const navigation = useNavigation();
+  const [image, setImage] = useState(user.imageUrl); // Simpan URL gambar
+
+  // 📌 Fungsi untuk memilih gambar dari galeri
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      startLoading();
+
+      // Buat FormData untuk mengirim file gambar
+      const formData = new FormData();
+      formData.append("username", username);
+      formData.append("email", email);
+
+      // **Tambahkan gambar hanya jika ada perubahan**
+      if (image && image !== user.imageUrl) {
+        const imageData = {
+          uri: image,
+          name: "profile.jpg",
+          type: "image/jpeg",
+        };
+        formData.append("image", imageData);
+      }
+
+      await axios({
+        method: "PUT",
+        url: "/api/users/" + user._id,
+        formData,
+        headers: {
+          Accept: "multipart/form-data",
+        },
+      });
+      console.log(formData._parts);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      await fetchUserProfile();
+      navigation.replace("Dashboard", { screen: "Profile" });
+    }
+  };
+  useEffect(() => {
+    setUsername(user.username);
+    setEmail(user.email);
+    setImage(user.imageUrl);
+  }, [user]);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -37,6 +107,7 @@ export default function EditProfileScreen() {
 
           {/* Profile Picture */}
           <TouchableOpacity
+          onPress={pickImage}
             style={{
               display: "flex",
               justifyContent: "center",
@@ -47,7 +118,7 @@ export default function EditProfileScreen() {
             <View>
               <Image
                 source={{
-                  uri: `https://image.pollinations.ai/prompt/personprofilepicture?width=200&height=320&nologo=true`,
+                  uri: image,
                 }}
                 style={{
                   width: 100,
@@ -65,7 +136,7 @@ export default function EditProfileScreen() {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  right: 0
+                  right: 0,
                 }}
               >
                 <Ionicons
@@ -116,9 +187,9 @@ export default function EditProfileScreen() {
                   color: "rgba(255, 255, 255, 0.5)",
                   height: 42,
                 }}
-              >
-                username
-              </TextInput>
+                onChangeText={(text) => setUsername(text)}
+                value={username}
+              />
             </View>
           </View>
 
@@ -158,56 +229,14 @@ export default function EditProfileScreen() {
                   color: "rgba(255, 255, 255, 0.5)",
                   height: 42,
                 }}
-              >
-                user@mail.com
-              </TextInput>
-            </View>
-          </View>
-
-          {/* Password */}
-          <View
-            style={{ display: "flex", flexDirection: "row", marginTop: 30 }}
-          >
-            <Ionicons name="lock-closed-outline" size={32} color="#FFFFFF" />
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                marginLeft: 10,
-                borderBottomWidth: 1,
-                borderBlockColor: "#FFFFFF",
-                width: "80%",
-              }}
-            >
-              <Text
-                style={{
-                  color: theme.text,
-                  fontFamily: theme.fonts.regular,
-                  fontSize: 16,
-                  fontWeight: "bold",
-                  color: "#FFFFFF",
-
-                  marginTop: 6,
-                }}
-              >
-                Password
-              </Text>
-              <TextInput
-                style={{
-                  color: theme.text,
-                  fontFamily: theme.fonts.regular,
-                  fontSize: 14,
-                  color: "rgba(255, 255, 255, 0.5)",
-                  height: 42,
-                }}
-              >
-                *******
-              </TextInput>
+                onChangeText={(text) => setEmail(text)}
+                value={email}
+              />
             </View>
           </View>
 
           <View style={{ height: 50, marginTop: 40 }}>
-            <GradientButton text={"EDIT PROFILE"} />
+            <GradientButton text={"SAVE"} onPress={() => handleSave()} />
           </View>
         </View>
       </View>

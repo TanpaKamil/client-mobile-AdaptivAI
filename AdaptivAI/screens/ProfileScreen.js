@@ -42,7 +42,7 @@ export default function ProfileScreen() {
         />
 
         <Text style={[styles.nameText, { color: "#FFFFFF" }]}>
-          {user?.email || 'User'}
+          {user?.username || 'User'}
         </Text>
 
         <View style={styles.infoItem}>
@@ -74,7 +74,7 @@ export default function ProfileScreen() {
             text="EDIT PROFILE"
             onPress={() => navigation.navigate("EditProfile")}
           />
-          <View style={{ marginTop: 20 }}>
+          <View style={{ marginTop: 20, height: 50 }}>
             <Button
               text="SIGN OUT"
               color="gray"

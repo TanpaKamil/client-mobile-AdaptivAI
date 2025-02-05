@@ -53,6 +53,11 @@ export function DiscussionProvider({ children }) {
        }
    };
 
+   async function putDiscussionById() {
+    
+   }
+
+
    return (
        <DiscussionContext.Provider value={{
            discussions,

@@ -8,7 +8,12 @@ import { useModules } from "../contexts/ModuleContext";
 export default function CurrentModule() {
   const { theme } = useTheme();
   const { currentModule } = useModules();
+
+  if (!currentModule) {
+    return <Text>Loading...</Text>; 
+  }
   
+  console.log(currentModule);
   return (
     <View style={currentModuleStyles.mainContainer}>
       <View style={currentModuleStyles.rowContainer}>

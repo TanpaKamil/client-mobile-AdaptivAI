@@ -46,7 +46,7 @@ export default function LoginScreen() {
       }
 
       console.log('Login successful, navigating to Dashboard...');
-      navigation.replace('Dashboard');
+      // navigation.replace('Dashboard');
     } catch (err) {
       console.error('Login error:', err);
       showError(err.message || 'An unexpected error occurred');

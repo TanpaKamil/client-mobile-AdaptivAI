@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import { Icon } from 'react-native-elements';
 
 const ErrorContext = createContext(null);
 
@@ -32,7 +33,13 @@ export function ErrorProvider({ children }) {
 }
 
 const ErrorToast = ({ message, type, onDismiss }) => (
-   <View style={styles[type]}>
+   <View style={{
+         flexDirection: 'row',
+         alignItems: 'center',
+         backgroundColor: type === 'error' ? 'red' : 'green',
+         padding: 10,
+         borderRadius: 5
+    }}>
        <Text>{message}</Text>
        <TouchableOpacity onPress={onDismiss}>
            <Icon name="close" />
