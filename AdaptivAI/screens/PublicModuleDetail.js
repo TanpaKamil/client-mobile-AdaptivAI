@@ -1,13 +1,22 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import { useTheme } from "../contexts/ThemeContext";
 import SearchBar from "../components/SearchInput";
 import GradientButton from "../components/buttons/GradientButton";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
 import axios from "../config/axiosInstance";
 
+import { useTheme } from "../contexts/ThemeContext";
+import { useModules } from "../contexts/ModuleContext";
+import { useAuth } from "../contexts/AuthContext";
+import { useError } from "../contexts/ErrorContext";
+import { useLoading } from "../contexts/LoadingContext";
+
 export default function PublicModuleDetailScreen({ route }) {
   const { theme } = useTheme();
+  const { currentModule, fetchModuleById, startModuleInstance } = useModules();
+  const { user } = useAuth();
+  const { showError } = useError();
+  const { startLoading, stopLoading } = useLoading();
   const { _id } = route.params;
   const [loading, setLoading] = useState(true);
   const [res, setRes] = useState({});
@@ -217,8 +226,7 @@ export default function PublicModuleDetailScreen({ route }) {
                   borderRadius: 20,
                 },
                 {
-                  width: `${
-                    (res.chapters[page].order / res.chapters.length) * 100}%`,
+                  width: `${(res.chapters[page].order / res.chapters.length) * 100}%`,
                 },
               ]}
             />

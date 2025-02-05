@@ -1,6 +1,5 @@
 import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ButtonGenerate from "../components/buttons/ButtonGenerate";
-import { useTheme } from "../contexts/ThemeContext";
 import SearchBar from "../components/SearchInput";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ModuleCard from "../components/cards/ModuleCard";
@@ -8,11 +7,19 @@ import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import axios from "../config/axiosInstance";
 
+import { useModules } from "../contexts/ModuleContext";
+import { useTheme } from "../contexts/ThemeContext";
+import { useLoading } from "../contexts/LoadingContext";
+import { useError } from "../contexts/ErrorContext";
+
 export default function PublicModuleScreen() {
+  const { modules, fetchPublicModules } = useModules();
   const { theme } = useTheme();
+  const { isLoading, startLoading, stopLoading } = useLoading();
+  const { showError } = useError();
   const navigation = useNavigation();
   const [res, setRes] = useState({});
-  const [loading, setLoading] = useState(true);
+
 
   async function fetchPubModules() {
     try {
@@ -163,7 +170,7 @@ export default function PublicModuleScreen() {
             data={res.modules}
             renderItem={({ item }) => <ModuleCard module={item} key={item._id} onPress={() => navigation.navigate("PublicModuleDetail", {
               _id: item._id,
-            })}/>}
+            })} />}
           />
           <View
             style={{

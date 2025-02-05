@@ -1,5 +1,4 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { useTheme } from "../contexts/ThemeContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import GradientButton from "../components/buttons/GradientButton";
@@ -7,8 +6,15 @@ import Divider from "../components/Divider";
 import Button from "../components/buttons/Button";
 import { flashCardStyles, ProgressCardStyles } from "../styles/pageStyles";
 
+import { useTheme } from "../contexts/ThemeContext";
+import { useModules } from "../contexts/ModuleContext";
+import { useLoading } from "../contexts/LoadingContext";
+
 export default function ChapterScreen() {
   const { theme } = useTheme();
+  const { currentModule } = useModules();
+  const { startLoading, stopLoading } = useLoading();
+  
   const navigation = useNavigation();
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>

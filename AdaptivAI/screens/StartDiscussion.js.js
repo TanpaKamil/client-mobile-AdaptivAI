@@ -1,10 +1,20 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import { useTheme } from "../contexts/ThemeContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import GradientButton from "../components/buttons/GradientButton";
 
+import { useTheme } from "../contexts/ThemeContext";
+import { useDiscussions } from "../contexts/DiscussionContext";
+import { useLoading } from "../contexts/LoadingContext";
+import { useError } from "../contexts/ErrorContext";
+
+
 export default function StartDiscussionScreen() {
   const { theme } = useTheme();
+  const { createDiscussion } = useDiscussions();
+  const { isLoading, startLoading, stopLoading } = useLoading();
+  const { showError } = useError();
+
+  
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={{ width: "100%", height: "100%" }}>

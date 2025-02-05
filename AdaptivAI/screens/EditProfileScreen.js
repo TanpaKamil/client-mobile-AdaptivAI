@@ -1,10 +1,17 @@
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { useTheme } from "../contexts/ThemeContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import GradientButton from "../components/buttons/GradientButton";
+import { useAuth } from "../contexts/AuthContext";
+import { useLoading } from "../contexts/LoadingContext";
+import { useError } from "../contexts/ErrorContext";
+import { useTheme } from "../contexts/ThemeContext";
 
 export default function EditProfileScreen() {
+  const { user, fetchUserProfile } = useAuth();
+  const { startLoading, stopLoading } = useLoading();
+  const { showError } = useError();
   const { theme } = useTheme();
+
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={{ flex: 1, marginTop: 20, width: "100%" }}>

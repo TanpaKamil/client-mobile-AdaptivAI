@@ -1,7 +1,5 @@
-
 import { useTheme } from "../contexts/ThemeContext";
 import {
-  Alert,
   Image,
   StyleSheet,
   Text,
@@ -13,45 +11,56 @@ import { FormInputStyles } from "../styles/componentStyles";
 import Button from "../components/buttons/Button";
 import Divider from "../components/Divider";
 import { useNavigation } from "@react-navigation/native";
-import { useContext, useState } from "react";
-import { AuthContext } from "../contexts/AuthContext";
-import axios from "../config/axiosInstance";
-import * as SecureStore from "expo-secure-store";
+import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { useError } from "../contexts/ErrorContext";
+import { useLoading } from "../contexts/LoadingContext";
 
 export default function LoginScreen() {
   const { theme } = useTheme();
   const navigation = useNavigation();
-  const {setIsLogin} = useContext(AuthContext);
+  const { login } = useAuth();
+  const { showError } = useError();
+  const { startLoading, stopLoading } = useLoading();
+
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState(""); 
+  const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    try {
-      const {data} = await axios({
-        method: "POST",
-        url: "/api/users/login",
-        data: {
-          email,
-          password,
-        },
-      })
-      setIsLogin(true);
-      const access_token = data.data.token
-      await SecureStore.setItemAsync("access_token", access_token);
-      // navigation.navigate("Dashboard");
-      // console.log(data)
-    } catch (err) {
-      console.log(err)
-      Alert.alert("Error", err.response.data.message);
+    if (!email || !password) {
+      console.log('Missing credentials');
+      showError('Email and password are required');
+      return;
     }
-  }
+
+    try {
+      console.log('Starting login process...');
+      startLoading('Logging in...');
+      const result = await login(email, password);
+      console.log('Login result:', result);
+
+      if (!result.success) {
+        console.log('Login failed:', result.error);
+        showError(result.error || 'Login failed');
+        return;
+      }
+
+      console.log('Login successful, navigating to Dashboard...');
+      navigation.replace('Dashboard');
+    } catch (err) {
+      console.error('Login error:', err);
+      showError(err.message || 'An unexpected error occurred');
+    } finally {
+      stopLoading();
+    }
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Image
         source={require("../assets/AdaptiveAI_Logo.png")}
-        style={styles.logo} // Apply the style
-        resizeMode="contain" // Ensure it scales within the screen
+        style={styles.logo}
+        resizeMode="contain"
       />
       <Text
         style={{
@@ -73,40 +82,46 @@ export default function LoginScreen() {
         Please, Log In.
       </Text>
 
-      {/* Login Form */}
-      <View
-        style={FormInputStyles.formContainer}
-      >
-        {/* Username Input */}
+      <View style={FormInputStyles.formContainer}>
         <View style={FormInputStyles.inputContainer}>
-          <TextInput style={FormInputStyles.inputText} placeholder="Username" 
-          onChangeText={setEmail}
-          value={email}
+          <TextInput
+            style={FormInputStyles.inputText}
+            placeholder="Email"
+            placeholderTextColor={theme.text}
+            onChangeText={setEmail}
+            value={email}
+            autoCapitalize="none"
+            keyboardType="email-address"
           />
         </View>
 
-        {/* Password Input */}
         <View style={FormInputStyles.inputContainer}>
           <TextInput
             style={FormInputStyles.inputText}
             placeholder="Password"
+            placeholderTextColor={theme.text}
             secureTextEntry={true}
             onChangeText={setPassword}
             value={password}
           />
         </View>
 
-        {/* Sign In Button*/}
         <View style={FormInputStyles.btn}>
-          <GradientButton text={"Sign In"} onPress={() => handleLogin()} />
+          <GradientButton
+            text={"Sign In"}
+            onPress={handleLogin}
+            colors={theme.gradientColors}
+          />
         </View>
 
-        {/* Divider */}
         <Divider />
 
-        {/* Sign Up Button*/}
         <View style={FormInputStyles.btn}>
-          <Button text={"Sign Up"} color={"gray"} onPress={() => navigation.navigate("Register")} />
+          <Button
+            text={"Sign Up"}
+            color={"gray"}
+            onPress={() => navigation.navigate("Register")}
+          />
         </View>
       </View>
     </View>
@@ -122,7 +137,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   logo: {
-    width: 240, // Set appropriate width
-    height: 100, // Set appropriate height
+    width: 240,
+    height: 100,
   },
 });

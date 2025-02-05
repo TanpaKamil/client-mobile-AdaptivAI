@@ -6,12 +6,19 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useTheme } from "../contexts/ThemeContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import GradientButton from "../components/buttons/GradientButton";
+import { useTheme } from "../contexts/ThemeContext";
+import { useDiscussions } from "../contexts/DiscussionContext";
+import { useAuth } from "../contexts/AuthContext";
+import { useError } from "../contexts/ErrorContext";
 
 export default function DiscussionDetail({ route }) {
   const { theme } = useTheme();
+  const { discussions, addComment, toggleLike } = useDiscussions();
+  const { user } = useAuth();
+  const { showError } = useError();
+
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View
@@ -185,7 +192,7 @@ export default function DiscussionDetail({ route }) {
           </Text>
 
           <FlatList
-            style={{ marginTop: 10, display: "flex", gap: 20, height:280 }}
+            style={{ marginTop: 10, display: "flex", gap: 20, height: 280 }}
             data={["Discussion 1", "Discussion 2", "Discussion 3", "discussion 4"]}
             renderItem={({ item }) => (
               <View

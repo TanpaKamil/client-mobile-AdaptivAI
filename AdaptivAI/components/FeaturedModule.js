@@ -1,6 +1,5 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import IonIcons from "@expo/vector-icons/Ionicons";
-import { useTheme } from "../contexts/ThemeContext";
 import FeatureCard from "./cards/FeatureCard";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
@@ -8,8 +7,15 @@ import axios from "../config/axiosInstance";
 import { featuredModuleStyles } from "../styles/componentParentStyles";
 import { tranparentBtnStyles } from "../styles/componentStyles";
 
+import { useTheme } from "../contexts/ThemeContext";
+import { useModules } from "../contexts/ModuleContext";
+import { useLoading } from "../contexts/LoadingContext";
+
+
 export default function FeaturedModule() {
   const { theme } = useTheme();
+  const { fetchModules, modules } = useModules();
+  const { isLoading, startLoading, stopLoading } = useLoading();
   const [loading, setLoading] = useState(true);
   const [res, setRes] = useState([]);
   const navigation = useNavigation();

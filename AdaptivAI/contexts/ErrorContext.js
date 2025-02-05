@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 
 const ErrorContext = createContext(null);
 

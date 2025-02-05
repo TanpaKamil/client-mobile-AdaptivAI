@@ -1,11 +1,19 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import { useTheme } from "../contexts/ThemeContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Picker } from "@react-native-picker/picker";
 import GradientButton from "../components/buttons/GradientButton";
 
+import { useTheme } from "../contexts/ThemeContext";
+import { useModules } from "../contexts/ModuleContext";
+import { useLoading } from "../contexts/LoadingContext";
+import { useError } from "../contexts/ErrorContext";
+
 export default function GenerateModuleScreen() {
   const { theme } = useTheme();
+  const { createModule } = useModules();
+  const { startLoading, stopLoading } = useLoading();
+  const { showError } = useError();
+  
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={{ width: "100%", height: "100%" }}>

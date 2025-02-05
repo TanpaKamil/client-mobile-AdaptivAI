@@ -1,47 +1,54 @@
 import { useTheme } from "../contexts/ThemeContext";
-import { Alert, Image, StyleSheet, Text, TextInput, View } from "react-native";
+import { Image, StyleSheet, Text, TextInput, View } from "react-native";
 import GradientButton from "../components/buttons/GradientButton";
 import { FormInputStyles } from "../styles/componentStyles";
 import Button from "../components/buttons/Button";
 import Divider from "../components/Divider";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import axios from "../config/axiosInstance";
+import { useAuth } from "../contexts/AuthContext";
+import { useError } from "../contexts/ErrorContext";
+import { useLoading } from "../contexts/LoadingContext";
 
 export default function RegisterScreen() {
   const { theme } = useTheme();
   const navigation = useNavigation();
+  const { register } = useAuth();
+  const { showError } = useError();
+  const { startLoading, stopLoading } = useLoading();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
-  const hadleRegister = async () => {
+  const handleRegister = async () => {
+    // Input validation
+    if (!email || !password || !passwordConfirmation) {
+      showError('Please fill all fields');
+      return;
+    }
+
+    if (password !== passwordConfirmation) {
+      showError('Password and password confirmation do not match');
+      return;
+    }
+
     try {
-      if (!email || !password || !passwordConfirmation) {
-        Alert.alert("Error", "Please fill all fields");
-        throw new Error({
-          data: {
-            message: "Please fill all fields",
-          },
-        });
+      startLoading('Creating your account...');
+      const result = await register(email, password);
+
+      if (!result.success) {
+        showError(result.error);
+        return;
       }
-      if (password !== passwordConfirmation) {
-        Alert.alert("Error", "Password and password confirmation do not match");
-        throw new Error( "Password and password confirmation do not match");
-      }
-      const { data } = await axios({
-        method: "POST",
-        url: "/api/users/register",
-        data: {
-          email,
-          password,
-        },
-      });
+
+      // Show success message and navigate to login
+      showError('Account created successfully', 'success');
       navigation.navigate("Login");
-      Alert.alert("Success", "Account created successfully");
     } catch (err) {
-      Alert.alert("Error", err.response.data.message);
+      showError(err.message || 'An unexpected error occurred');
+    } finally {
+      stopLoading();
     }
   };
 
@@ -49,8 +56,8 @@ export default function RegisterScreen() {
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Image
         source={require("../assets/AdaptiveAI_Logo.png")}
-        style={styles.logo} // Apply the style
-        resizeMode="contain" // Ensure it scales within the screen
+        style={styles.logo}
+        resizeMode="contain"
       />
       <Text
         style={{
@@ -72,52 +79,51 @@ export default function RegisterScreen() {
         Let's Get Started
       </Text>
 
-      {/* Login Form */}
       <View style={FormInputStyles.formContainer}>
-        {/* Username Input */}
         <View style={FormInputStyles.inputContainer}>
           <TextInput
             style={FormInputStyles.inputText}
-            placeholder="email"
+            placeholder="Email"
+            placeholderTextColor={theme.text}
             onChangeText={setEmail}
             value={email}
+            autoCapitalize="none"
+            keyboardType="email-address"
           />
         </View>
 
-        {/* Password Input */}
         <View style={FormInputStyles.inputContainer}>
           <TextInput
             style={FormInputStyles.inputText}
             placeholder="Password"
+            placeholderTextColor={theme.text}
             secureTextEntry={true}
             onChangeText={setPassword}
             value={password}
           />
         </View>
 
-        {/* Password Confirmation Input */}
         <View style={FormInputStyles.inputContainer}>
           <TextInput
             style={FormInputStyles.inputText}
             placeholder="Password Confirmation"
+            placeholderTextColor={theme.text}
             secureTextEntry={true}
             onChangeText={setPasswordConfirmation}
             value={passwordConfirmation}
           />
         </View>
 
-        {/* Sign In Button*/}
         <View style={FormInputStyles.btn}>
           <GradientButton
             text={"Create an Account"}
-            onPress={() => hadleRegister()}
+            onPress={handleRegister}
+            colors={theme.gradientColors}
           />
         </View>
 
-        {/* Divider */}
         <Divider />
 
-        {/* Sign Up Button*/}
         <View style={FormInputStyles.btn}>
           <Button
             text={"Sign In"}
@@ -139,7 +145,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   logo: {
-    width: 240, // Set appropriate width
-    height: 100, // Set appropriate height
+    width: 240,
+    height: 100,
   },
 });

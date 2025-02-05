@@ -2,11 +2,17 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import GradientButton from "../components/buttons/GradientButton";
 import Divider from "../components/Divider";
 import Button from "../components/buttons/Button";
-import { useTheme } from "../contexts/ThemeContext";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { useTheme } from "../contexts/ThemeContext";
+import { useModules } from "../contexts/ModuleContext";
+import { useError } from "../contexts/ErrorContext";
+import { useLoading } from "../contexts/LoadingContext";
 
 export default function AssessmentScreen() {
   const { theme } = useTheme();
+  const { currentModule, submitAssessment } = useModules();
+  const { showError } = useError();
+  const { startLoading, stopLoading } = useLoading();
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>

@@ -1,5 +1,5 @@
 import { createContext, useState, useContext } from 'react';
-import axios from '../config/axiosInstance';
+import axios from '../services/api/axiosConfig';
 
 const ModuleContext = createContext(null);
 

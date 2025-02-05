@@ -1,9 +1,13 @@
 import { Image, Text, View } from "react-native";
-import { useTheme } from "../contexts/ThemeContext";
 import { dashBoardProfileStyles } from "../styles/componentParentStyles";
+
+import { useTheme } from "../contexts/ThemeContext";
+import { useAuth } from "../contexts/AuthContext";
+
 
 export default function DashboardProfile() {
   const { theme } = useTheme();
+  const { user } = useAuth();
 
   // Fecth User Profile Data
   return (

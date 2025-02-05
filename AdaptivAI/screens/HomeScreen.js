@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { useTheme } from "../contexts/ThemeContext";
 import ButtonGenerate from "../components/buttons/ButtonGenerate";
 import DashboardProfile from "../components/DashboardProfile";
 import CurrentModule from "../components/CurrentModule";
@@ -13,12 +12,20 @@ import DiscussionFeatured from "../components/DiscussionFeatured";
 import { useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 
+import { useTheme } from "../contexts/ThemeContext";
+import { useAuth } from "../contexts/AuthContext";
+import { useDiscussions } from "../contexts/DiscussionContext";
+import { useModules } from "../contexts/ModuleContext";
+
 export default function HomeScreen() {
   const { theme } = useTheme();
+  const { user } = useAuth();
+  const { discussions, fetchDiscussions } = useDiscussions();
+  const { modules, fetchPublicModules } = useModules();
 
   useEffect(() => {
     console.log(SecureStore.getItemAsync("access_token"));
-  },[])
+  }, [])
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <ScrollView>

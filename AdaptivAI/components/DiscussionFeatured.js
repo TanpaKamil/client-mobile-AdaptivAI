@@ -1,12 +1,15 @@
 import { Text, TouchableOpacity, View } from "react-native";
-import { useTheme } from "../contexts/ThemeContext";
 import DiscussionCard from "./cards/DiscussionCard";
 import { discussionFeaturedStyles } from "../styles/componentParentStyles";
 import { useNavigation } from "@react-navigation/native";
 import { tranparentBtnStyles } from "../styles/componentStyles";
 
+import { useTheme } from "../contexts/ThemeContext";
+import { useDiscussions } from "../contexts/DiscussionContext";
+
 export default function DiscussionFeatured() {
   const { theme } = useTheme();
+  const { discussions, fetchDiscussions } = useDiscussions();
   const navigation = useNavigation();
   return (
     <>

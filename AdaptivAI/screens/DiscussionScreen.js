@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useTheme } from "../contexts/ThemeContext";
 import DiscussionCard from "../components/cards/DiscussionCard";
 import GradientButton from "../components/buttons/GradientButton";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -12,8 +11,15 @@ import SearchBar from "../components/SearchInput";
 import { useNavigation } from "@react-navigation/native";
 import { tranparentBtnStyles } from "../styles/componentStyles";
 
+import { useTheme } from "../contexts/ThemeContext";
+import { useDiscussions } from "../contexts/DiscussionContext";
+import { useLoading } from "../contexts/LoadingContext";
+
+
 export default function DiscussionScreen() {
   const { theme } = useTheme();
+  const { discussions, fetchDiscussions } = useDiscussions();
+  const { startLoading, stopLoading } = useLoading();
   const navigation = useNavigation();
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -96,7 +102,7 @@ export default function DiscussionScreen() {
               height: 50,
             }}
           >
-            <GradientButton text={"START DISCUSSION"} onPress={() => navigation.navigate("StartDiscussion")}/>
+            <GradientButton text={"START DISCUSSION"} onPress={() => navigation.navigate("StartDiscussion")} />
           </View>
         </View>
       </View>

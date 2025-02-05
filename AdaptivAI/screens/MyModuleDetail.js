@@ -5,6 +5,7 @@ import {
   View,
 } from "react-native";
 import { useTheme } from "../contexts/ThemeContext";
+import { useModules } from "../contexts/ModuleContext";
 import { LinearGradient } from "expo-linear-gradient";
 import ChapterCard from "../components/cards/ChapterCard";
 import { useNavigation } from "@react-navigation/native";
@@ -12,6 +13,7 @@ import { MyModuleDetailStyles, ProgressCardStyles } from "../styles/pageStyles";
 
 export default function MyModuleDetail() {
   const { theme } = useTheme();
+  const { currentModule, fetchModuleById } = useModules();
   const navigation = useNavigation();
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>

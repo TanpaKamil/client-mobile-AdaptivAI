@@ -1,10 +1,14 @@
 import { Image, Text, View } from "react-native";
 import GradientButton from "./buttons/GradientButton";
-import { useTheme } from "../contexts/ThemeContext";
 import { currentModuleStyles } from "../styles/componentParentStyles";
+
+import { useTheme } from "../contexts/ThemeContext";
+import { useModules } from "../contexts/ModuleContext";
 
 export default function CurrentModule() {
   const { theme } = useTheme();
+  const { currentModule } = useModules();
+  
   return (
     <View style={currentModuleStyles.mainContainer}>
       <View style={currentModuleStyles.rowContainer}>
