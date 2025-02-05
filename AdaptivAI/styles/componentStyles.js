@@ -67,7 +67,7 @@ export const CardChapterStyles = StyleSheet.create({
     padding: 10,
   },
   titleText: {
-    fontSize: 16,
+    fontSize: 14,
     marginVertical: 10,
     fontWeight: "bold",
   },
@@ -191,15 +191,18 @@ export const cardUserModuleStyles = StyleSheet.create({
   rowContainer: {
     display: "flex",
     flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     gap: 12,
-    alignItems: "center",
   },
   titleText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
+    width: 220,
   },
   statusBadge: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
+    height: 16,
     backgroundColor: "#FF9500",
     borderRadius: 10,
     color: "#FFFFFF",

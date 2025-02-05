@@ -36,7 +36,7 @@ export default function ProfileScreen() {
 
         <Image
           source={{
-            uri: `https://image.pollinations.ai/prompt/personprofilepicture?width=200&height=320&nologo=true`,
+            uri: user?.imageUrl,
           }}
           style={styles.profileImage}
         />

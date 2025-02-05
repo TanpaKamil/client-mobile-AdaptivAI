@@ -84,6 +84,11 @@ export default function EditProfileScreen() {
     }
   };
 
+  useEffect(() => {
+    setUsername(user.username);
+    setEmail(user.email);
+  }, [user]);
+  
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={{ flex: 1, marginTop: 20, width: "100%" }}>

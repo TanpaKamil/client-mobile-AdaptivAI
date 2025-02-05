@@ -8,6 +8,7 @@ export function ModuleProvider({ children }) {
   const [currentModule, setCurrentModule] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [instanceModules, setInstanceModules] = useState([]);
 
   const fetchPublicModules = async () => {
     try {
@@ -40,9 +41,23 @@ export function ModuleProvider({ children }) {
   const fetchModuleById = async (moduleId) => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`/api/modules/pub/${moduleId}`);
-      setCurrentModule(data.data.module);
-      return data.data.module;
+      const { data } = await axios.get(`/api/modules/instances/${moduleId}`);
+      setCurrentModule(data.data.instance);
+      return data.data.instance;
+    } catch (error) {
+      setError(error.response?.data?.message);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchInstanceModules = async () => {
+    try {
+      setLoading(true);
+      const { data } = await axios.get(`/api/modules/instances`);
+      setInstanceModules(data.data.instances);
+      return data.data.instance;
     } catch (error) {
       setError(error.response?.data?.message);
       return null;
@@ -96,6 +111,8 @@ export function ModuleProvider({ children }) {
         currentModule,
         loading,
         error,
+        instanceModules,
+        fetchInstanceModules,
         fetchPublicModules,
         fetchModuleById,
         createModule,

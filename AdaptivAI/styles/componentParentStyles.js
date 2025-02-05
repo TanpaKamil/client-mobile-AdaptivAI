@@ -35,7 +35,7 @@ export const currentModuleStyles = StyleSheet.create({
   presentationText: {
     fontSize: 12,
     textAlign: "right",
-    marginBottom: 5,
+    marginVertical: 5,
   },
 });
 

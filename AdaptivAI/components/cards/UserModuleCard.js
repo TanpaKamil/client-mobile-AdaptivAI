@@ -19,7 +19,7 @@ export default function UserModuleCard({ module }) {
             cardUserModuleStyles.titleText,
           ]}
         >
-          Title
+          {module.title}
         </Text>
         <Text
           style={[
@@ -29,7 +29,7 @@ export default function UserModuleCard({ module }) {
             cardUserModuleStyles.statusBadge,
           ]}
         >
-          STATUS
+          {module.status}
         </Text>
       </View>
 
@@ -44,21 +44,19 @@ export default function UserModuleCard({ module }) {
             cardUserModuleStyles.descriptionText,
           ]}
         >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. asdasdsad
-          asdasd asdsad asd asdas Sed imperdiet odio eget risus lacinia
-          fermentum.
+          {module.excerpt}
         </Text>
 
         <View style={cardUserModuleStyles.btnSize}>
           <GradientButton
             text={"Learn Now"}
             onPress={() => {
-              navigation.navigate("Chapters");
+              navigation.navigate("Chapters", { instanceId: module._id });
             }}
           />
         </View>
       </View>
-      <Text style={cardUserModuleStyles.lastOpenText}>Last Opened</Text>
+      <Text style={cardUserModuleStyles.lastOpenText}>{module.lastAccessedAt}</Text>
     </View>
   );
 }

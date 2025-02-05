@@ -4,22 +4,49 @@ import { currentModuleStyles } from "../styles/componentParentStyles";
 
 import { useTheme } from "../contexts/ThemeContext";
 import { useModules } from "../contexts/ModuleContext";
+import { useEffect, useState } from "react";
+import axios from "../config/axiosInstance";
+import { useNavigation } from "@react-navigation/native";
 
 export default function CurrentModule() {
   const { theme } = useTheme();
-  const { currentModule } = useModules();
+  const [currentModule, setCurrentModule] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const navigation = useNavigation();
 
-  if (!currentModule) {
-    return <Text>Loading...</Text>; 
+  async function fetchCurrentModule() {
+    try {
+      const { data } = await axios({
+        method: "GET",
+        url: "/api/modules/dashboard",
+      });
+      setCurrentModule(data.data.modules);
+      console.log(data.modules);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   }
-  
-  console.log(currentModule);
+  useEffect(() => {
+    fetchCurrentModule();
+  }, []);
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (currentModule.length === 0) {
+    return <><View></View></>;
+  }
+
   return (
     <View style={currentModuleStyles.mainContainer}>
       <View style={currentModuleStyles.rowContainer}>
         <Image
           source={{
-            uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHC_8-EMZFLsoGfcdsw3cR7IS3DmOf7tgoJg&s",
+            uri: "https://image.pollinations.ai/prompt/illustrationof" + currentModule[page].title + "?width=200&height=320&nologo=true",
           }}
           style={currentModuleStyles.imgSize}
         />
@@ -30,18 +57,10 @@ export default function CurrentModule() {
               fontFamily: theme.fonts.regular,
               fontSize: 16,
               fontWeight: "bold",
+              width: 200,
             }}
           >
-            Current Module
-          </Text>
-          <Text
-            style={{
-              color: theme.text,
-              fontFamily: theme.fonts.regular,
-              fontSize: 12,
-            }}
-          >
-            Introduction to AI
+            {currentModule[page].title}
           </Text>
         </View>
       </View>
@@ -55,7 +74,7 @@ export default function CurrentModule() {
             currentModuleStyles.presentationText,
           ]}
         >
-          85%
+          {currentModule[page].completedChapters} / {currentModule[page].totalChapters} Chapters
         </Text>
         <View
           style={[
@@ -69,14 +88,14 @@ export default function CurrentModule() {
             style={[
               {
                 backgroundColor: "#FBA459",
-                width: "85%",
+                width: `${(currentModule[page].completedChapters / currentModule[page].totalChapters) * 100}%`,
               },
               currentModuleStyles.barSize,
             ]}
           />
         </View>
         <View style={currentModuleStyles.btnSize}>
-          <GradientButton text={"Continue Learning"} />
+          <GradientButton text={"Continue Learning"} onPress={() => navigation.navigate("")}/>
         </View>
       </View>
     </View>

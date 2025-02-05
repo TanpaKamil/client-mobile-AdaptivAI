@@ -1,4 +1,5 @@
 import {
+  FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -14,13 +15,19 @@ import { tranparentBtnStyles } from "../styles/componentStyles";
 import { useTheme } from "../contexts/ThemeContext";
 import { useDiscussions } from "../contexts/DiscussionContext";
 import { useLoading } from "../contexts/LoadingContext";
-
+import { useEffect } from "react";
+import { discussionFeaturedStyles } from "../styles/componentParentStyles";
 
 export default function DiscussionScreen() {
   const { theme } = useTheme();
   const { discussions, fetchDiscussions } = useDiscussions();
   const { startLoading, stopLoading } = useLoading();
   const navigation = useNavigation();
+
+  useEffect(() => {
+    fetchDiscussions();
+  }, []);
+
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={{ width: "100%", height: "100%" }}>
@@ -55,9 +62,7 @@ export default function DiscussionScreen() {
               </Text>
 
               {/* View all button */}
-              <TouchableOpacity
-                style={tranparentBtnStyles.mainContainer}
-              >
+              <TouchableOpacity style={tranparentBtnStyles.mainContainer}>
                 <Ionicons
                   name="swap-vertical-outline"
                   size={12}
@@ -90,10 +95,16 @@ export default function DiscussionScreen() {
               }}
             >
               {/* Disccusion Card */}
-              <DiscussionCard />
-              <DiscussionCard />
-              <DiscussionCard />
-              <DiscussionCard />
+              <FlatList
+                data={discussions}
+                renderItem={({ item }) => (
+                  <DiscussionCard
+                    discussion={item}
+                    key={item._id}
+                    style={discussionFeaturedStyles.card}
+                  />
+                )}
+              />
             </View>
           </View>
 
@@ -102,7 +113,10 @@ export default function DiscussionScreen() {
               height: 50,
             }}
           >
-            <GradientButton text={"START DISCUSSION"} onPress={() => navigation.navigate("StartDiscussion")} />
+            <GradientButton
+              text={"START DISCUSSION"}
+              onPress={() => navigation.navigate("StartDiscussion")}
+            />
           </View>
         </View>
       </View>

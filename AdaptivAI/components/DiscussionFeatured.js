@@ -14,6 +14,7 @@ export default function DiscussionFeatured() {
   const { discussions, fetchDiscussions } = useDiscussions();
   const [ featured, setFeatured ] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
 
   async function fetchDiscussionsFeatured() {
     try {

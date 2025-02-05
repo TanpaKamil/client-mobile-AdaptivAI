@@ -10,11 +10,22 @@ import { LinearGradient } from "expo-linear-gradient";
 import ChapterCard from "../components/cards/ChapterCard";
 import { useNavigation } from "@react-navigation/native";
 import { MyModuleDetailStyles, ProgressCardStyles } from "../styles/pageStyles";
+import { useEffect } from "react";
 
-export default function MyModuleDetail() {
+export default function MyModuleDetail( {route}) {
   const { theme } = useTheme();
   const { currentModule, fetchModuleById } = useModules();
   const navigation = useNavigation();
+  const {instanceId} = route.params;
+
+  useEffect(() => {
+    fetchModuleById(instanceId);
+  }, []);
+
+  if (!currentModule) {
+    return <Text>Loading...</Text>;
+  }
+
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <ScrollView>
@@ -25,13 +36,13 @@ export default function MyModuleDetail() {
             end={{ x: 1, y: 1 }}
             style={ProgressCardStyles.containerSize}
           >
-            <Text style={ProgressCardStyles.titleText}>Title Module 1</Text>
+            <Text style={ProgressCardStyles.titleText}>{currentModule.moduleTitle}</Text>
             <Text style={ProgressCardStyles.progressText}>
-              Description Module{" "}
+              {currentModule.moduleDescription}
             </Text>
             <View style={ProgressCardStyles.progressContainer}>
               <Text style={ProgressCardStyles.progressText}>Progress</Text>
-              <Text style={ProgressCardStyles.progressText}>75%</Text>
+              <Text style={ProgressCardStyles.progressText}>{`${currentModule.progress.chapterProgress.percentage}%`}</Text>
             </View>
 
             {/* Progress Bar */}
@@ -47,7 +58,7 @@ export default function MyModuleDetail() {
                 style={{
                   backgroundColor: "#FFFFFF",
                   height: 10,
-                  width: "75%",
+                  width: `${currentModule.progress.chapterProgress.percentage}%`,
                   borderRadius: 5,
                 }}
               />
@@ -57,14 +68,14 @@ export default function MyModuleDetail() {
               <Text style={ProgressCardStyles.categoryText}>
                 Current Chapter:
               </Text>
-              <Text style={ProgressCardStyles.valueText}> React Basic</Text>
+              <Text style={ProgressCardStyles.valueText}> {currentModule.currentChapter.title}</Text>
             </View>
 
             <View style={ProgressCardStyles.scoreContainer}>
               <Text style={ProgressCardStyles.categoryText}>
                 Comperhension Score:
               </Text>
-              <Text style={ProgressCardStyles.valueText}>85%</Text>
+              <Text style={ProgressCardStyles.valueText}>{currentModule.progress.comprehensionScore}%</Text>
             </View>
 
             <Text style={ProgressCardStyles.lastAccessText}>
@@ -72,15 +83,20 @@ export default function MyModuleDetail() {
             </Text>
 
             <View style={ProgressCardStyles.badgeContainer}>
-              <Text style={ProgressCardStyles.statusBadge}>STATUS</Text>
+              <Text style={ProgressCardStyles.statusBadge}>{currentModule.status}</Text>
             </View>
           </LinearGradient>
 
           <View style={MyModuleDetailStyles.cardContainer}>
-            <ChapterCard onPress={() => navigation.navigate("Chapter")} />
-            <ChapterCard />
-            <ChapterCard />
-            <ChapterCard />
+            {currentModule.chapters.map((chapter) => {
+              return (
+                <ChapterCard
+                  key={chapter.id}
+                  chapter={chapter}
+                  onPress={() => navigation.navigate("Chapter", { chapterId: chapter.id, instnceId: currentModule._id})}
+                />
+              );
+            })}
           </View>
         </View>
       </ScrollView>

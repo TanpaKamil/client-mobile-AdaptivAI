@@ -12,9 +12,9 @@ export default function ChapterCard({ chapter, onPress }) {
         <Text
           style={CardChapterStyles.orderText}
         >
-          Chapter 1
+          Chapter {chapter.order}
         </Text>
-        <Text style={CardChapterStyles.statusBadge}>STATUS</Text>
+        <Text style={CardChapterStyles.statusBadge}>{chapter.status}</Text>
       </View>
       <Text
         style={[
@@ -25,7 +25,7 @@ export default function ChapterCard({ chapter, onPress }) {
           CardChapterStyles.titleText,
         ]}
       >
-        Introduction to Web Development
+        {chapter.title}
       </Text>
     </TouchableOpacity>
   );

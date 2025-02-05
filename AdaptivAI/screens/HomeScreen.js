@@ -16,12 +16,14 @@ import { useTheme } from "../contexts/ThemeContext";
 import { useAuth } from "../contexts/AuthContext";
 import { useDiscussions } from "../contexts/DiscussionContext";
 import { useModules } from "../contexts/ModuleContext";
+import { useNavigation } from "@react-navigation/native";
 
 export default function HomeScreen() {
   const { theme } = useTheme();
   const { user } = useAuth();
   const { discussions, fetchDiscussions } = useDiscussions();
   const { modules, fetchPublicModules } = useModules();
+  const navigation = useNavigation();
 
   useEffect(() => {
     console.log(SecureStore.getItemAsync("access_token"));
@@ -35,7 +37,7 @@ export default function HomeScreen() {
 
           {/* Button Generate Module */}
           <View style={styles.btn}>
-            <ButtonGenerate text={"Create New Module"} />
+            <ButtonGenerate text={"Create New Module"} onPress={() => navigation.navigate("Dashboard", {screen: "Generate"})}/>
           </View>
 
           {/* Current Module */}

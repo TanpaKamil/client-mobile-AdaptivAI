@@ -38,7 +38,7 @@ export default function DiscussionDetail({ route }) {
         method: "GET",
         url: `/api/discussions/${id}`,
       });
-      console.log(data);
+
       setDiscussionById(data);
     } catch (err) {
       console.error(err);

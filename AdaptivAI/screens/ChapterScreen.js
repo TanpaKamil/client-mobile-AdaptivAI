@@ -9,12 +9,37 @@ import { flashCardStyles, ProgressCardStyles } from "../styles/pageStyles";
 import { useTheme } from "../contexts/ThemeContext";
 import { useModules } from "../contexts/ModuleContext";
 import { useLoading } from "../contexts/LoadingContext";
+import { useEffect, useState } from "react";
+import { use } from "react";
 
-export default function ChapterScreen() {
+export default function ChapterScreen({ route }) {
   const { theme } = useTheme();
   const { currentModule } = useModules();
   const { startLoading, stopLoading } = useLoading();
-  
+  const { instanceId, chapterId } = route.params;
+  const [loading, setLoading] = useState(true);
+  const [chapter, setChapter] = useState({});
+
+  async function fetchChapterById() {
+    try {
+      const { data } = await axios({
+        method: "GET",
+        url: `/api/modules/instances/${instanceId}/chapters/${chapterId}`,
+      });
+      setChapter(data.data.chapter);
+      console.log(data.data.chapter);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+
+    useEffect(() => {
+      fetchChapterById();
+    }, []);
+
+    if (loading) return <Text>Loading ...</Text>;
+  }
   const navigation = useNavigation();
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
