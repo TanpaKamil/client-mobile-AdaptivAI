@@ -159,6 +159,9 @@ export default function StartDiscussionScreen() {
             placeholder="Write your questions"
             placeholderTextColor="#999"
             multiline={true}
+            onChangeText={(text) => setContent(text)}
+            value={content}
+            placeholder="Write your content"
           />
 
           {/* Submit Button */}
@@ -171,6 +174,7 @@ export default function StartDiscussionScreen() {
         </View>
       </View>
     </View>
+  );
   );
 }
 

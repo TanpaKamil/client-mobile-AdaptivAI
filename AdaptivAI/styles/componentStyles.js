@@ -87,6 +87,7 @@ export const CardDiscussionStyles = StyleSheet.create({
   mainContainer: {
     display: "flex",
     flexDirection: "row",
+    marginBottom: 20,
   },
   imgSize: {
     width: 40,
@@ -103,8 +104,9 @@ export const CardDiscussionStyles = StyleSheet.create({
     fontSize: 12,
   },
   TitleText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
+    width: 240,
   },
 });
 
