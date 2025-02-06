@@ -158,7 +158,7 @@ export default function ChapterScreen({ route }) {
               marginBottom: 40,
             }}
           >
-            <Button color={"gray"} text={"Practice More"} />
+            <Button color={"gray"} text={"Practice More"} onPress={() => navigation.navigate("Practice" ,{instanceId: instanceId, chapterId: chapterId})}/>
           </View>
         </View>
       </ScrollView>

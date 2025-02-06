@@ -16,6 +16,7 @@ import { AuthContext } from "../contexts/AuthContext.js";
 import { useContext, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
+import PracticeScreen from "../screens/PracticeScreen.js";
 
 const Stack = createNativeStackNavigator();
 
@@ -143,6 +144,14 @@ export default function RootStack() {
           <Stack.Screen
             name="EditProfile"
             component={EditProfileScreen}
+            options={{
+              headerShown: true,
+            }}
+          />
+
+          <Stack.Screen
+            name="Practice"
+            component={PracticeScreen}
             options={{
               headerShown: true,
             }}

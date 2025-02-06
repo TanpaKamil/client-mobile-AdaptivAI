@@ -96,12 +96,16 @@ export default function DiscussionScreen() {
             >
               {/* Disccusion Card */}
               <FlatList
+              style={{
+                display: "flex",
+                gap: 12,
+              }}
                 data={discussions}
                 renderItem={({ item }) => (
                   <DiscussionCard
                     discussion={item}
                     key={item._id}
-                    style={discussionFeaturedStyles.card}
+                    style={[discussionFeaturedStyles.cardContainer, {marginBottom: 12}]}
                   />
                 )}
               />

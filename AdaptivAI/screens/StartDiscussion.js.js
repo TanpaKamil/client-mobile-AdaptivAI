@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import GradientButton from "../components/buttons/GradientButton";
 
@@ -6,15 +6,71 @@ import { useTheme } from "../contexts/ThemeContext";
 import { useDiscussions } from "../contexts/DiscussionContext";
 import { useLoading } from "../contexts/LoadingContext";
 import { useError } from "../contexts/ErrorContext";
-
+import { useState } from "react";
+import axios from "../config/axiosInstance";
+import * as ImagePicker from "expo-image-picker"; // Import Image Picker
+import { useNavigation } from "@react-navigation/native";
 
 export default function StartDiscussionScreen() {
   const { theme } = useTheme();
   const { createDiscussion } = useDiscussions();
   const { isLoading, startLoading, stopLoading } = useLoading();
   const { showError } = useError();
+  const [image, setImage] = useState(null);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const navigation = useNavigation();
 
+    // 📌 Fungsi untuk memilih gambar dari galeri
+    const pickImage = async () => {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
   
+      if (!result.canceled) {
+        setImage(result.assets[0].uri);
+      }
+    };
+
+  async function handleCreateDiscussion() {
+    try {
+      startLoading();
+
+      // Buat FormData untuk mengirim file gambar
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("content", content);
+
+      // Tambahkan gambar hanya jika ada perubahan
+      if (image && image !== user.imageUrl) {
+        // Get file extension from uri
+        const uriParts = image.split('.');
+        const fileType = uriParts[uriParts.length - 1];
+
+        // Create file object for FormData
+        formData.append("image", {
+          uri: image,
+          name: `profile.${fileType}`,
+          type: `image/${fileType}`
+        });
+      }
+
+      await axios({
+        method: "POST",
+        url: "/api/discussions",
+        data: formData,  // Gunakan 'data' bukan 'formData'
+        headers: {
+          'Content-Type': 'multipart/form-data',  // Header yang benar
+        },
+      });
+    } catch (err) {
+      Alert.alert("Error", err.response.data.message);
+    }
+  }
+
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={{ width: "100%", height: "100%" }}>
@@ -29,7 +85,8 @@ export default function StartDiscussionScreen() {
           >
             Upload Image
           </Text>
-          <View
+          <TouchableOpacity
+          onPress={pickImage}
             style={{
               width: "100%",
               height: 120,
@@ -52,7 +109,7 @@ export default function StartDiscussionScreen() {
               color="#716AD8"
               style={{ justifyContent: "center" }}
             />
-          </View>
+          </TouchableOpacity>
 
           <Text
             style={{
@@ -80,7 +137,9 @@ export default function StartDiscussionScreen() {
               textAlign: "left",
               textAlignVertical: "top",
             }}
-            defaultValue="Input Title"
+            onChangeText={(text) => setTitle(text)}
+            value={title}
+            placeholder="Write your title"
           />
 
           <Text
@@ -110,17 +169,27 @@ export default function StartDiscussionScreen() {
             }}
             defaultValue="Write your questions"
             multiline={true}
+            onChangeText={(text) => setContent(text)}
+            value={content}
+            placeholder="Write your content"
           />
 
-          <View style={{
-            width: "100%", height: 50, marginTop: 20
-          }}>
-            <GradientButton text={"START DISCUSSION"} />
+          <View
+            style={{
+              width: "100%",
+              height: 50,
+              marginTop: 20,
+            }}
+          >
+            <GradientButton
+              text={"START DISCUSSION"}
+              onPress={() => handleCreateDiscussion()}
+            />
           </View>
         </View>
       </View>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
