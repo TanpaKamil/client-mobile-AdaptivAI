@@ -17,6 +17,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
 import AssessmentResultScreen from "../screens/AssessmentResultScreen";
+import PracticeScreen from "../screens/PracticeScreen";
 
 
 const Stack = createNativeStackNavigator();
@@ -161,6 +162,28 @@ export default function RootStack() {
                 backgroundColor: "#262626",
               },
               // Using the same header title as other screens
+              headerTitle: () => (
+                <Image
+                  source={require("../assets/AdaptiveAI_Logo.png")}
+                  style={{
+                    width: 120,
+                    height: 60,
+                  }}
+                  resizeMode="contain"
+                />
+              ),
+            }}
+          />
+          <Stack.Screen
+            name="Practice"
+            component={PracticeScreen}
+            options={{
+              headerShown: true,
+              headerTitleAlign: "center",
+              headerTintColor: "#FFFFFF",
+              headerStyle: {
+                backgroundColor: "#262626",
+              },
               headerTitle: () => (
                 <Image
                   source={require("../assets/AdaptiveAI_Logo.png")}

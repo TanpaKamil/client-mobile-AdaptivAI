@@ -175,7 +175,6 @@ export default function StartDiscussionScreen() {
       </View>
     </View>
   );
-  );
 }
 
 const styles = StyleSheet.create({
