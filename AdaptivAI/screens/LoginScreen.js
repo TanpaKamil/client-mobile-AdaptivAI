@@ -86,8 +86,7 @@ export default function LoginScreen() {
         <View style={FormInputStyles.inputContainer}>
           <TextInput
             style={FormInputStyles.inputText}
-            placeholder="Email"
-            placeholderTextColor={theme.text}
+            placeholder="Input your email"
             onChangeText={setEmail}
             value={email}
             autoCapitalize="none"
@@ -98,8 +97,7 @@ export default function LoginScreen() {
         <View style={FormInputStyles.inputContainer}>
           <TextInput
             style={FormInputStyles.inputText}
-            placeholder="Password"
-            placeholderTextColor={theme.text}
+            placeholder="Input your password"
             secureTextEntry={true}
             onChangeText={setPassword}
             value={password}

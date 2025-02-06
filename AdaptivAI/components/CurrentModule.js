@@ -95,7 +95,7 @@ export default function CurrentModule() {
           />
         </View>
         <View style={currentModuleStyles.btnSize}>
-          <GradientButton text={"Continue Learning"} onPress={() => navigation.navigate("")}/>
+          <GradientButton text={"Continue Learning"} onPress={() => navigation.navigate("MyModule")}/>
         </View>
       </View>
     </View>

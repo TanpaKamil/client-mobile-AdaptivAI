@@ -52,7 +52,7 @@ export default function RecommendedModule() {
             key={module._id}
             module={module}
             onPress={() =>
-              navigation.navigate("PublicModuleScreen", { module })
+              navigation.navigate("PublicModuleDetail", { _id: module._id })
             }
           />
         ))}

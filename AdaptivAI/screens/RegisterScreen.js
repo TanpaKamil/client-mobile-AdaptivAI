@@ -83,8 +83,7 @@ export default function RegisterScreen() {
         <View style={FormInputStyles.inputContainer}>
           <TextInput
             style={FormInputStyles.inputText}
-            placeholder="Email"
-            placeholderTextColor={theme.text}
+            placeholder="Input your email"
             onChangeText={setEmail}
             value={email}
             autoCapitalize="none"
@@ -95,8 +94,7 @@ export default function RegisterScreen() {
         <View style={FormInputStyles.inputContainer}>
           <TextInput
             style={FormInputStyles.inputText}
-            placeholder="Password"
-            placeholderTextColor={theme.text}
+            placeholder="Input your password"
             secureTextEntry={true}
             onChangeText={setPassword}
             value={password}
@@ -107,7 +105,6 @@ export default function RegisterScreen() {
           <TextInput
             style={FormInputStyles.inputText}
             placeholder="Password Confirmation"
-            placeholderTextColor={theme.text}
             secureTextEntry={true}
             onChangeText={setPasswordConfirmation}
             value={passwordConfirmation}
