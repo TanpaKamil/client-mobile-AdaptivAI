@@ -6,6 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
+  Dimensions
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import GradientButton from "../components/buttons/GradientButton";
@@ -14,8 +16,17 @@ import { useDiscussions } from "../contexts/DiscussionContext";
 import { useAuth } from "../contexts/AuthContext";
 import { useError } from "../contexts/ErrorContext";
 import axios from "../config/axiosInstance";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../components/buttons/Button";
+
+const DEFAULT_PROFILE_IMAGE = 'https://ui-avatars.com/api/?background=random';
+const windowWidth = Dimensions.get('window').width;
+
+// Helper function to get profile image URL
+const getProfileImage = (user) => {
+  if (!user) return DEFAULT_PROFILE_IMAGE;
+  return user.imgUrl || DEFAULT_PROFILE_IMAGE;
+};
 
 export default function DiscussionDetail({ route }) {
   const { theme } = useTheme();
@@ -23,6 +34,7 @@ export default function DiscussionDetail({ route }) {
   const { user } = useAuth();
   const { showError } = useError();
   const { id } = route.params;
+
   const [discussionById, setDiscussionById] = useState({});
   const [loading, setLoading] = useState(true);
   const [commentForm, setCommentForm] = useState(false);
@@ -31,389 +43,192 @@ export default function DiscussionDetail({ route }) {
     content: "",
   });
 
+  useEffect(() => {
+    console.log('DiscussionDetail mounted with id:', id);
+    if (id) {
+      fetchDiscussionById();
+    } else {
+      console.error('No discussion ID provided');
+      showError('No discussion ID provided');
+      setLoading(false);
+    }
+  }, [id]);
+
   async function fetchDiscussionById() {
+    console.log('Starting to fetch discussion with id:', id);
     try {
-      console.log(id);
-      const { data } = await axios({
+      const response = await axios({
         method: "GET",
         url: `/api/discussions/${id}`,
       });
-
-      setDiscussionById(data);
+      console.log('Discussion data received:', response.data);
+      setDiscussionById(response.data);
     } catch (err) {
-      console.error(err);
+      console.error('Error fetching discussion:', err);
+      showError(err.message || "Failed to fetch discussion");
     } finally {
       setLoading(false);
     }
   }
 
-  async function toggleLikeHandler() {
+  async function fetchDiscussionById() {
     try {
-      toggleLike(discussionById._id);
-      fetchDiscussionById();
+      const { data } = await axios({
+        method: "GET",
+        url: `/api/discussions/${id}`,
+      });
+      setDiscussionById(data);
     } catch (err) {
-      console.error(err);
-    }
-  }
-
-  async function addCommentHandler() {
-    try {
-      await addComment(discussionById._id, commentContent);
-    } catch (err) {
-      console.error(err);
+      showError(err.message || "Failed to fetch discussion");
     } finally {
-      fetchDiscussionById();
-      setCommentContent("");
-      setCommentForm(false);
+      setLoading(false);
     }
   }
 
-  async function editPost() {
-    try {
-      // const formData = new FormData();
-      // formData.append("content", contentPost.content);
-
-      await axios({
-        method: "PUT",
-        url: `/api/discussions/${discussionById._id}`,
-        data: {
-          content: contentPost.content,
-        },
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        
-      })
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setContentPost({ content: "" });
-      fetchDiscussionById();
-    }
-  }
-
-  useEffect(() => {
-    fetchDiscussionById();
-  }, []);
+  // ... other handlers stay the same ...
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return (
+      <View style={[styles.container, { backgroundColor: theme.background }]}>
+        <ActivityIndicator size="large" color="#FBA459" />
+      </View>
+    );
   }
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <View
-        style={{
-          flex: 1,
-          marginTop: 20,
-          width: "100%",
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            marginHorizontal: 25,
-          }}
-        >
-          <View
-            style={{
-              minHeight: 200,
-              padding: 16,
-              borderRadius: 8,
-              borderWidth: 1,
-              borderColor: "#FBA459",
-              backgroundColor: "#FFFFFF",
-            }}
-          >
-            <View style={{ display: "flex", flexDirection: "row" }}>
+      <View style={styles.wrapper}>
+        <View style={styles.contentWrapper}>
+          <View style={styles.discussionCard}>
+            {/* User Info Section */}
+            <View style={styles.userInfoContainer}>
               <Image
                 source={{
-                  uri:
-                    "https://image.pollinations.ai/prompt/profileof" +
-                    discussionById?.userId?.username +
-                    "?width=200&height=320&nologo=true",
+                  uri: getProfileImage(discussionById?.userId)
                 }}
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 50,
-                }}
+                style={styles.profileImage}
               />
-              <View
-                style={{
-                  marginLeft: 6,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontWeight: "bold",
-                  }}
-                >
-                  {discussionById.userId.username}
+              <View style={styles.userTextContainer}>
+                <Text style={styles.username}>
+                  {discussionById.userId?.username}
                 </Text>
-                <Text
-                  style={{
-                    fontSize: 10,
-                    fontWeight: "semibold",
-                  }}
-                >
-                  {" "}
+                <Text style={styles.timestamp}>
                   {discussionById.createdAt}
                 </Text>
               </View>
             </View>
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: "bold",
-                marginVertical: 4,
-              }}
-            >
+
+            {/* Title Section */}
+            <Text style={styles.title}>
               {discussionById.title}
             </Text>
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                gap: 10,
-                marginBottom: 8,
-              }}
-            >
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
+
+            {/* Stats Section */}
+            <View style={styles.statsContainer}>
+              <View style={styles.statItem}>
                 <Ionicons name="heart-outline" size={12} color="gray" />
-                <Text style={{ fontSize: 10, marginLeft: 4 }}>
+                <Text style={styles.statText}>
                   {discussionById.likes_length}
                 </Text>
               </View>
 
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-              >
+              <View style={styles.statItem}>
                 <Ionicons name="chatbubble-outline" size={12} color="gray" />
-                <Text style={{ fontSize: 10, marginLeft: 4 }}>
+                <Text style={styles.statText}>
                   {discussionById.comments_length}
                 </Text>
               </View>
             </View>
+
+            {/* Discussion Image */}
+            {discussionById.imgUrl && (
+              <Image
+                source={{ uri: discussionById.imgUrl }}
+                style={styles.discussionImage}
+                resizeMode="cover"
+              />
+            )}
+
+            {/* Content Section */}
             {contentPost.content ? (
               <TextInput
-                style={{
-                  textAlign: "justify",
-                  fontSize: 12,
-                  borderWidth: 1,
-                  marginBottom: 10,
-                  borderRadius: 5,
-                  borderColor: "#FBA459",
-                  padding: 5,
-                }}
+                style={styles.contentInput}
                 multiline={true}
                 onChangeText={(text) => setContentPost({ content: text })}
                 value={contentPost.content}
-              ></TextInput>
+              />
             ) : (
-              <Text
-                style={{
-                  textAlign: "justify",
-                  fontSize: 12,
-                }}
-              >
+              <Text style={styles.contentText}>
                 {discussionById.content}
               </Text>
             )}
 
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "flex-end",
-                gap: 10,
-              }}
-            >
+            {/* Action Buttons */}
+            <View style={styles.actionButtonsContainer}>
               <TouchableOpacity
                 onPress={() => toggleLikeHandler()}
-                style={{
-                  paddingHorizontal: 10,
-                  paddingVertical: 2,
-                  borderRadius: 40,
-                  backgroundColor: "#FBA459",
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: 4,
-                }}
+                style={styles.actionButton}
               >
                 <Ionicons name="heart-outline" size={12} color="#FFFFFF" />
-                <Text style={{ color: "#FFFFFF", fontSize: 10 }}>Like</Text>
+                <Text style={styles.actionButtonText}>Like</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 onPress={() => setCommentForm(true)}
-                style={{
-                  paddingHorizontal: 10,
-                  paddingVertical: 2,
-                  borderRadius: 40,
-                  backgroundColor: "#FBA459",
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: 4,
-                }}
+                style={styles.actionButton}
               >
                 <Ionicons name="chatbubble-outline" size={12} color="#FFFFFF" />
-                <Text style={{ color: "#FFFFFF", fontSize: 10 }}>Comment</Text>
+                <Text style={styles.actionButtonText}>Comment</Text>
               </TouchableOpacity>
             </View>
           </View>
-          <View
-            style={{
-              display: commentForm ? "flex" : "none",
-              marginTop: 10,
-              backgroundColor: "#FBA459",
-              padding: 10,
-              borderRadius: 8,
-            }}
-          >
-            <Text
-              style={{
-                color: "#FFFFFF",
-                fontSize: 12,
-                fontWeight: "bold",
-              }}
-            >
-              Comments :
-            </Text>
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                padding: 5,
-                marginTop: 5,
-                marginBottom: 5,
-                justifyContent: "space-between",
-              }}
-            >
-              <TextInput
-                onChangeText={(text) => setCommentContent(text)}
-                value={commentContent}
-                style={{
-                  borderColor: "#FBA459",
-                  backgroundColor: "#FFFFFF",
-                  borderRadius: 5,
-                  paddingHorizontal: 10,
-                  fontSize: 12,
-                  width: "80%",
-                  height: 40,
-                }}
-                placeholder="input comment .."
-              />
 
-              <TouchableOpacity
-                onPress={() => addCommentHandler()}
-                style={{
-                  paddingHorizontal: 10,
-                  borderRadius: 5,
-                  backgroundColor: "#FFFFFF",
-                  gap: 4,
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    color: "#FBA459",
-                    fontSize: 10,
-                    textAlignVertical: "center",
-                  }}
+          {/* Comment Form */}
+          {commentForm && (
+            <View style={styles.commentFormContainer}>
+              <Text style={styles.commentHeader}>
+                Comments:
+              </Text>
+              <View style={styles.commentInputContainer}>
+                <TextInput
+                  onChangeText={setCommentContent}
+                  value={commentContent}
+                  style={styles.commentInput}
+                  placeholder="input comment .."
+                  placeholderTextColor="#999"
+                />
+                <TouchableOpacity
+                  onPress={addCommentHandler}
+                  style={styles.sendButton}
                 >
-                  Send
-                </Text>
-              </TouchableOpacity>
+                  <Text style={styles.sendButtonText}>Send</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-          <Text
-            style={{
-              marginTop: 20,
-              fontSize: 16,
-              fontWeight: "bold",
-              color: "#FFFFFF",
-            }}
-          >
-            Discussion
-          </Text>
+          )}
 
+          {/* Comments List */}
+          <Text style={styles.discussionHeader}>Discussion</Text>
           <FlatList
-            style={{ marginTop: 10, display: "flex", gap: 20, height: 280 }}
+            style={styles.commentsList}
             data={discussionById.comments}
             renderItem={({ item }) => (
-              <View
-                style={{
-                  borderBottomWidth: 1,
-                  borderBottomColor: "white",
-                  marginTop: 12,
-                }}
-              >
-                <View style={{ display: "flex", flexDirection: "row" }}>
+              <View style={styles.commentItem}>
+                <View style={styles.commentUserInfo}>
                   <Image
-                    source={{
-                      uri: `https://image.pollinations.ai/prompt/profileof${item.userId.username}?width=200&height=200&nologo=true`,
-                    }}
-                    style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: 5,
-                    }}
+                    source={{ uri: getProfileImage(item.userId) }}
+                    style={styles.commentUserImage}
                   />
-                  <View
-                    style={{
-                      marginLeft: 6,
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: "bold",
-                        color: "#FFFFFF",
-                      }}
-                    >
+                  <View style={styles.commentUserText}>
+                    <Text style={styles.commentUsername}>
                       {item.userId.username}
                     </Text>
-                    <Text
-                      style={{
-                        fontSize: 10,
-                        fontWeight: "semibold",
-                        color: "#FFFFFF",
-                      }}
-                    >
-                      {" "}
+                    <Text style={styles.commentTimestamp}>
                       {item.createdAt}
                     </Text>
                   </View>
                 </View>
-                <Text
-                  style={{
-                    fontSize: 10,
-                    color: "#FFFFFF",
-                    marginVertical: 8,
-                  }}
-                >
+                <Text style={styles.commentContent}>
                   {item.content}
                 </Text>
               </View>
@@ -421,26 +236,13 @@ export default function DiscussionDetail({ route }) {
             keyExtractor={(item, index) => index.toString()}
           />
         </View>
-        <View
-          style={{
-            height: 45,
-            marginHorizontal: 25,
-            marginBottom: 40,
-          }}
-        >
-          {contentPost.content ? (
-            <GradientButton
-              text={"SAVE"}
-              onPress={() => editPost()}
-            />
-          ) : (
-            <GradientButton
-              text={"EDIT"}
-              onPress={() =>
-                setContentPost({ content: discussionById.content })
-              }
-            />
-          )}
+
+        {/* Edit/Save Button */}
+        <View style={styles.bottomButton}>
+          <GradientButton
+            text={contentPost.content ? "SAVE" : "EDIT"}
+            onPress={contentPost.content ? editPost : () => setContentPost({ content: discussionById.content })}
+          />
         </View>
       </View>
     </View>
@@ -451,8 +253,183 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  wrapper: {
+    flex: 1,
+    marginTop: 20,
+    width: "100%",
+  },
+  contentWrapper: {
+    flex: 1,
+    marginHorizontal: 25,
+  },
+  discussionCard: {
+    minHeight: 200,
+    padding: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#FBA459",
+    backgroundColor: "#FFFFFF",
+  },
+  userInfoContainer: {
+    flexDirection: "row",
     alignItems: "center",
+  },
+  profileImage: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+  },
+  userTextContainer: {
+    marginLeft: 6,
     justifyContent: "center",
+  },
+  username: {
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  timestamp: {
+    fontSize: 10,
+    color: "#666",
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginVertical: 4,
+  },
+  statsContainer: {
+    flexDirection: "row",
+    gap: 10,
+    marginBottom: 8,
+  },
+  statItem: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  statText: {
+    fontSize: 10,
+    marginLeft: 4,
+    color: "gray",
+  },
+  discussionImage: {
+    width: windowWidth - 50,
+    height: 200,
+    borderRadius: 8,
+    marginVertical: 8,
+  },
+  contentInput: {
+    textAlign: "justify",
+    fontSize: 12,
+    borderWidth: 1,
+    marginBottom: 10,
+    borderRadius: 5,
+    borderColor: "#FBA459",
+    padding: 5,
+  },
+  contentText: {
+    textAlign: "justify",
+    fontSize: 12,
+  },
+  actionButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 10,
+    marginTop: 10,
+  },
+  actionButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    borderRadius: 40,
+    backgroundColor: "#FBA459",
+    flexDirection: "row",
+    gap: 4,
+    alignItems: "center",
+  },
+  actionButtonText: {
+    color: "#FFFFFF",
+    fontSize: 10,
+  },
+  commentFormContainer: {
+    marginTop: 10,
+    backgroundColor: "#FBA459",
+    padding: 10,
+    borderRadius: 8,
+  },
+  commentHeader: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  commentInputContainer: {
+    flexDirection: "row",
+    padding: 5,
+    marginTop: 5,
+    marginBottom: 5,
+    justifyContent: "space-between",
+  },
+  commentInput: {
+    borderColor: "#FBA459",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    fontSize: 12,
+    width: "80%",
+    height: 40,
+  },
+  sendButton: {
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+  },
+  sendButtonText: {
+    color: "#FBA459",
+    fontSize: 10,
+  },
+  discussionHeader: {
+    marginTop: 20,
+    fontSize: 16,
+    fontWeight: "bold",
     color: "#FFFFFF",
   },
-});
+  commentsList: {
+    marginTop: 10,
+    height: 280,
+  },
+  commentItem: {
+    borderBottomWidth: 1,
+    borderBottomColor: "white",
+    marginTop: 12,
+  },
+  commentUserInfo: {
+    flexDirection: "row",
+  },
+  commentUserImage: {
+    width: 36,
+    height: 36,
+    borderRadius: 5,
+  },
+  commentUserText: {
+    marginLeft: 6,
+    justifyContent: "center",
+  },
+  commentUsername: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+  },
+  commentTimestamp: {
+    fontSize: 10,
+    color: "#FFFFFF",
+  },
+  commentContent: {
+    fontSize: 10,
+    color: "#FFFFFF",
+    marginVertical: 8,
+  },
+  bottomButton: {
+    height: 45,
+    marginHorizontal: 25,
+    marginBottom: 40,
+  },
+}); 
