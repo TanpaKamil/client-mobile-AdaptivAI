@@ -2,7 +2,7 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import IonIcons from "@expo/vector-icons/Ionicons";
 import FeatureCard from "./cards/FeatureCard";
 import { useNavigation } from "@react-navigation/native";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "../config/axiosInstance";
 import { featuredModuleStyles } from "../styles/componentParentStyles";
 import { tranparentBtnStyles } from "../styles/componentStyles";
@@ -47,7 +47,7 @@ export default function FeaturedModule() {
     return () => {
       isMounted = false;
     };
-  }, [startLoading, stopLoading]);
+  }, []);
 
   if (isLoading) {
     return <Text>Loading ...</Text>;
